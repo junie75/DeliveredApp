@@ -38,6 +38,9 @@ export default function App() {
               <Text style={styles.loginTxt}>Login</Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity>
+            <Text style={styles.newHere}>New here? Create Account</Text>
+          </TouchableOpacity>
           {/* </TouchableWithoutFeedback> */}
         </KeyboardAwareScrollView>
       </View>
@@ -55,13 +58,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   inputLabel: {
-    fontSize: 20,
+    fontSize: 15,
     paddingBottom: 5,
     marginLeft: 10,
-    color: "lightgray",
+    // color: "lightgray",
   },
   inputBox: {
-    borderColor: "lightgray",
+    // borderColor: "lightgray",
     borderRadius: 10,
     borderWidth: 1,
     // backgroundColor: "#fff",
@@ -86,5 +89,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     paddingVertical: 10,
+  },
+
+  newHere: {
+    textAlign: "center",
+    color: "#007AFF",
   },
 });
