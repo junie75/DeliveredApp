@@ -11,11 +11,15 @@ import {
   Platform,
   Alert,
 } from "react-native";
+import { imageLookup } from "../../imageLookup";
 
-const Hero = ({ imageURL }) => {
+const Hero = ({ imageName }) => {
   return (
     <ImageBackground
-      source={require("../../../assets/signInHero.png")}
+      // source={require("../../../assets/signInHero.png")}
+      // source={{ uri: imageURL }}
+      // source={require(imageURL)}
+      source={imageLookup[imageName]}
       imageStyle={styles.welcomeBackground}
     >
       <View style={styles.welcomeBox}>

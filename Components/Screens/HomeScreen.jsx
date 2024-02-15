@@ -104,6 +104,7 @@ const Home = ({ navigation }) => {
     });
   };
 
+  const imageName = "homeHero";
   return (
     // <ImageBackground
     //   source={require("../assets/AppBackground.png")}
@@ -120,7 +121,7 @@ const Home = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Header showMenu={true} />
-        <Hero imageURL={"../../../assets/packageDelivery.png"} />
+        <Hero imageName={imageName} />
         <NavBtnBox navigation={navigation} />
         <Button title="test" onPress={() => insertData()} />
         <Button title="try" onPress={() => console.log(accounts)} />
