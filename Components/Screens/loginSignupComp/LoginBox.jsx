@@ -3,7 +3,7 @@ import React from "react";
 import Inputs from "./Inputs";
 import LoginBtn from "./LoginBtn";
 
-const LoginBox = ({ arr, navigation }) => {
+const LoginBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;
 
   return (
@@ -14,7 +14,7 @@ const LoginBox = ({ arr, navigation }) => {
       {/* <Inputs boxLabel="Email" />
       <Inputs boxLabel="Password" /> */}
       <LoginBtn
-        btnTxt={"Login"}
+        btnTxt={btnTxt}
         navigation={navigation}
         navigateString={"Home"}
       />
@@ -26,6 +26,8 @@ export default LoginBox;
 
 const styles = StyleSheet.create({
   loginBox: {
+    // flex: 0.1,
+    // flexShrink: 0,
     // marginTop: "50%",
     justifyContent: "center",
     marginHorizontal: 20,

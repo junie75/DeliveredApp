@@ -16,6 +16,8 @@ export default LoginBtn;
 
 const styles = StyleSheet.create({
   loginBtn: {
+    flex: 1,
+    flexShrink: 2,
     marginVertical: 8,
     backgroundColor: "#007AFF",
     alignSelf: "center",

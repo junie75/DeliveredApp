@@ -17,6 +17,8 @@ import {
   ScreenStackHeaderConfig,
 } from "react-native-screens/native-stack";
 import Login from "./Components/Screens/LogInScreen";
+import SignUp from "./Components/Screens/SignUpScreen";
+import OnboardingScreen from "./Components/Screens/OnboardingScreen";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -26,8 +28,14 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Onboard" component={OnboardingScreen} />
         <Stack.Screen name="Login" component={Login} options={{ title: "" }} />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{ title: "" }}
+        />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Deliveries" component={DeliveriesScreen} />
         <Stack.Screen name="Mailroom Map" component={MailMapScreen} />

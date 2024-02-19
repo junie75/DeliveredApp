@@ -29,8 +29,12 @@ const Login = ({ navigation }) => {
         <Header showMenu={false} />
         <KeyboardAwareScrollView behavior="position">
           <Hero imageName={imageName} />
-          <LoginBox arr={["Email", "Password"]} navigation={navigation} />
-          <TouchableOpacity>
+          <LoginBox
+            arr={["Email", "Password"]}
+            navigation={navigation}
+            btnTxt={"Login"}
+          />
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
             <Text style={styles.newHere}>New here? Create Account</Text>
           </TouchableOpacity>
         </KeyboardAwareScrollView>
