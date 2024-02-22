@@ -123,9 +123,9 @@ const Home = ({ navigation }) => {
         <Header showMenu={true} />
         <Hero imageName={imageName} />
         <NavBtnBox navigation={navigation} />
-        <Button title="test" onPress={() => insertData()} />
+        {/* <Button title="test" onPress={() => insertData()} />
         <Button title="try" onPress={() => console.log(accounts)} />
-        {showAccounts()}
+        {showAccounts()} */}
       </ScrollView>
     </SafeAreaView>
     // </ImageBackground>

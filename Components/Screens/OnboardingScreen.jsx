@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     // lineHeight: 80,
+    // textAlign: "center",
   },
   h2: {
     fontSize: 12,
