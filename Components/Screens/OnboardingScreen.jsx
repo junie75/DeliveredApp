@@ -49,7 +49,10 @@ const OnboardingScreen = ({ navigation }) => {
           >
             <Text style={styles.btntxt}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnright}>
+          <TouchableOpacity
+            style={styles.btnright}
+            onPress={() => navigation.navigate("SignUp")}
+          >
             <Text style={styles.btntxt}>SignUp</Text>
           </TouchableOpacity>
         </View>
