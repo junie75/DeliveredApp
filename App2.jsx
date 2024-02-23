@@ -19,6 +19,7 @@ import {
 import Login from "./Components/Screens/LogInScreen";
 import SignUp from "./Components/Screens/SignUpScreen";
 import OnboardingScreen from "./Components/Screens/OnboardingScreen";
+import AdminHome from "./Components/adminScreens/AdminHome";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -52,6 +53,7 @@ export default function App() {
         <Stack.Screen name="Deliveries" component={DeliveriesScreen} />
         <Stack.Screen name="Mailroom Map" component={MailMapScreen} />
         <Stack.Screen name="How-To Page" component={HowToScreen} />
+        <Stack.Screen name="Admin Home" component={AdminHome} />
         {/* <Home></Home> */}
       </Stack.Navigator>
     </NavigationContainer>

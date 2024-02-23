@@ -18,8 +18,8 @@ const DeliveriesScreen = () => {
             <Text style={styles.headerName}>Package</Text>
 
             <View style={styles.headerDetails}>
-              <Text>11/21/23</Text>
-              <Text>12:45pm</Text>
+              <Text style={styles.details}>11/21/23</Text>
+              <Text style={styles.details}>12:45pm</Text>
             </View>
           </View>
 
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 10,
     flex: 1,
-    // marginBottom: 80,
+    marginBottom: 80,
   },
 
   deliveryBox: {
@@ -118,5 +118,9 @@ const styles = StyleSheet.create({
   submit: {
     color: "blue",
     textDecorationLine: "underline",
+  },
+
+  details: {
+    color: "gray",
   },
 });
