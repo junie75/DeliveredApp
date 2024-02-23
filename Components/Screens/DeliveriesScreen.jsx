@@ -13,7 +13,7 @@ const DeliveriesScreen = () => {
     let deliveries = [];
     for (let i = 0; i < 5; i++) {
       deliveries.push(
-        <View style={styles.deliveryBox}>
+        <View key={i} style={styles.deliveryBox}>
           <View style={styles.deliveryHeader}>
             <Text style={styles.headerName}>Package</Text>
 

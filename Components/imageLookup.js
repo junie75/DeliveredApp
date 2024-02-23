@@ -4,4 +4,5 @@ export const imageLookup = {
   onBoardHero: require("../assets/onboardImg.png"),
   schoolMap: require("../assets/schoolMap.png"),
   howToImage: require("../assets/howToImage.png"),
+  createAccImage: require("../assets/createAccHero.png"),
 };

@@ -1,14 +1,25 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import LoginBox from "./loginSignupComp/LoginBox";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Hero from "./homeComp/Hero";
+import Header from "./homeComp/Header";
 
 const SignUp = ({ navigation }) => {
+  const imageName = "createAccImage";
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView>
         <View style={styles.container} behavior="position">
-          <Text style={styles.headerText}>Create an Account</Text>
+          <Header showMenu={false} />
+          <Text style={styles.headerText}>Create Account</Text>
+          <Hero imageName={imageName} />
           <LoginBox
             arr={[
               "First Name",
@@ -22,6 +33,9 @@ const SignUp = ({ navigation }) => {
             navigation={navigation}
             btnTxt={"Create Account"}
           />
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.newHere}>Already have an account? Login</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -36,10 +50,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "System",
-    marginTop: 10,
-    fontWeight: "bold",
-    marginLeft: 10,
+    // alignSelf: "center",
+    // marginTop: 20,
+    // fontWeight: "bold",
+    marginHorizontal: 20,
+    // color: "#007AFF",
+  },
+  newHere: {
+    textAlign: "center",
+    color: "#007AFF",
+    textDecorationLine: "underline",
   },
 });

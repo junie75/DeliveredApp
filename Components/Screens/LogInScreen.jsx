@@ -95,5 +95,6 @@ const styles = StyleSheet.create({
   newHere: {
     textAlign: "center",
     color: "#007AFF",
+    textDecorationLine: "underline",
   },
 });

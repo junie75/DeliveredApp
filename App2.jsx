@@ -30,11 +30,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Onboard"
           component={OnboardingScreen}
           options={{ headerShown: false }}
-        />
+        /> */}
         <Stack.Screen
           name="Login"
           component={Login}
@@ -43,7 +43,8 @@ export default function App() {
         <Stack.Screen
           name="SignUp"
           component={SignUp}
-          options={{ title: "" }}
+          // options={{ title: "Create an Account" }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Home"
