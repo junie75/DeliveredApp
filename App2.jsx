@@ -20,6 +20,7 @@ import Login from "./Components/Screens/LogInScreen";
 import SignUp from "./Components/Screens/SignUpScreen";
 import OnboardingScreen from "./Components/Screens/OnboardingScreen";
 import AdminHome from "./Components/adminScreens/AdminHome";
+import { openDatabase, createTables } from "./databaseHelper";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -27,6 +28,19 @@ import AdminHome from "./Components/adminScreens/AdminHome";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  useEffect(() => {
+    //open db when the app starts
+    const database = openDatabase();
+    console.log("database opened succdessfully");
+    //create tables if they don't exist
+    createTables();
+    console.log("tables created succdessfully");
+    return async () => {
+      //optionally close the db when the app is unmounted
+      await database.closeAsync();
+      console.log("database closed successfully");
+    };
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator>

@@ -7,14 +7,16 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
+import { insertAccount } from "../../../databaseHelper";
 import Inputs from "./Inputs";
-import LoginBtn from "./LoginBtn";
-import { authenticateUser, deleteAccount } from "../../../databaseHelper";
 
-const LoginBox = ({ arr, navigation, btnTxt }) => {
+const SignUpBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;
+
   //hold the user inputted data
   const [userData, setUserData] = useState({
+    name: "",
+    lname: "",
     email: "",
     password: "",
   });
@@ -27,51 +29,59 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
     });
   };
 
-  const handleLogin = async () => {
+  const insertData = async (
+    fname = userData.name,
+    lname = userData.lname,
+    email = userData.email,
+    password = userData.password
+  ) => {
     try {
-      const user = await authenticateUser(userData.email, userData.password);
-      if (user) {
-        // Successful login, navigate to the next screen or perform other actions
-        console.log("Login successful:", user);
-        navigation.navigate("Home");
-      } else {
-        // Display error message for invalid credentials
-        Alert.alert(
-          "Invalid Credentials",
-          "Please check your username and password."
-        );
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      Alert.alert(
-        "Error",
-        "An error occurred during login. Please try again later."
-      );
+      await insertAccount(fname, lname, email, password);
+      console.log("Account inserted successfuly");
+      navigation.navigate("Home");
+    } catch (e) {
+      Alert.alert(`Error inserting ${fname}`, e.message);
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteAccount(id);
-      Alert.alert("Success", "Account successfully deleted");
-    } catch (error) {
-      Alert.alert("Error", "Failed to delete account");
-      console.error("Error deleting account:", error);
-    }
-  };
+  //   const insertData = async (userData) => {
+  //     try {
+  //       await insertAccount(
+  //         userData.name,
+  //         userData.lname,
+  //         userData.email,
+  //         userData.password
+  //       );
+  //       navigation.navigate("Home");
+  //     } catch (e) {
+  //       Alert.alert(`Error inserting ${fname}`, e.message);
+  //     }
+  //   };
 
   return (
-    <View style={styles.loginBox}>
+    <View style={styles.signupBox}>
       {/* {inputs.map((boxLabel, index) => (
-        <Inputs key={index} boxLabel={boxLabel} />
+        <View key={index} style={styles.inputBoxes}>
+          <Text style={styles.inputLabel}>{boxLabel}</Text>
+          <TextInput style={styles.inputBox} />
+        </View>
       ))} */}
-      {/* <Inputs boxLabel="Email" />
-      <Inputs boxLabel="Password" /> */}
-      {/* <LoginBtn
-        btnTxt={btnTxt}
-        navigation={navigation}
-        navigateString={"Home"}
-      /> */}
+      <View style={styles.inputBoxes}>
+        <Text style={styles.inputLabel}>First Name</Text>
+        <TextInput
+          style={styles.inputBox}
+          value={userData.name}
+          onChangeText={(value) => handleChangeText("name", value)}
+        />
+      </View>
+      <View style={styles.inputBoxes}>
+        <Text style={styles.inputLabel}>Last Name</Text>
+        <TextInput
+          style={styles.inputBox}
+          value={userData.lname}
+          onChangeText={(value) => handleChangeText("lname", value)}
+        />
+      </View>
       <View style={styles.inputBoxes}>
         <Text style={styles.inputLabel}>Email</Text>
         <TextInput
@@ -89,35 +99,33 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
           onChangeText={(value) => handleChangeText("password", value)}
         />
       </View>
+      {/* <Inputs boxLabel="Email" />
+      <Inputs boxLabel="Password" /> */}
+      {/* <LoginBtn
+        btnTxt={btnTxt}
+        navigation={navigation}
+        navigateString={"Home"}
+      /> */}
 
       {/*login button */}
-      <TouchableOpacity style={styles.loginBtn} onPress={() => handleLogin()}>
-        <Text style={styles.loginBtnTxt}>{btnTxt}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          for (let accID = 2; accID < 22; accID++) {
-            handleDelete(accID);
-          }
-        }}
-      >
-        <Text>Delete account</Text>
+      <TouchableOpacity style={styles.signupBtn} onPress={() => insertData()}>
+        <Text style={styles.signupBtnTxt}>{btnTxt}</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default LoginBox;
+export default SignUpBox;
 
 const styles = StyleSheet.create({
-  loginBox: {
+  signupBox: {
     // flex: 0.1,
     // flexShrink: 0,
     // marginTop: "50%",
     justifyContent: "center",
     marginHorizontal: 20,
   },
-  loginBtn: {
+  signupBtn: {
     flex: 1,
     flexShrink: 2,
     marginVertical: 8,
@@ -127,7 +135,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 30,
   },
-  loginBtnTxt: {
+  signupBtnTxt: {
     color: "white",
     textAlign: "center",
     fontSize: 20,

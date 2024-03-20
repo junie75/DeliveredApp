@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import LoginBox from "./loginSignupComp/LoginBox";
+import SignUpBox from "./loginSignupComp/SignUpBox";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Hero from "./homeComp/Hero";
 import Header from "./homeComp/Header";
@@ -20,15 +20,15 @@ const SignUp = ({ navigation }) => {
           <Header showMenu={false} />
           <Text style={styles.headerText}>Create Account</Text>
           <Hero imageName={imageName} />
-          <LoginBox
+          <SignUpBox
             arr={[
               "First Name",
               "Last Name",
               "Password",
-              "Dorm Building",
-              "Room Number",
-              "Email",
-              "Phone Number",
+              // "Dorm Building",
+              // "Room Number",
+              // "Email",
+              // "Phone Number",
             ]}
             navigation={navigation}
             btnTxt={"Create Account"}

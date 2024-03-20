@@ -17,7 +17,7 @@ import Hero from "./homeComp/Hero";
 import NavBtnBox from "./homeComp/NavBtnBox";
 // import DeliveredDB from "../../DeliveredDB";
 //navigation prop used to navigate between pages
-import { getAccounts, insertAccount } from "../../DeliveredDB";
+import { getAccounts, insertAccount } from "../../databaseHelper";
 const Home = ({ navigation }) => {
   const [newDelivery, setNewDelivery] = useState(true);
   const [accounts, setAccounts] = useState([]);
@@ -70,7 +70,7 @@ const Home = ({ navigation }) => {
           onPress: () => {
             console.log("deliveries pressed");
             // console.log(myDB);
-            console.log(accounts);
+            // console.log(accounts);
             navigation.navigate("Deliveries");
           },
           isPreferred: "true",
@@ -91,6 +91,7 @@ const Home = ({ navigation }) => {
           <Text>Last Name: {accounts.Lname}</Text>
           <Text>Address: {accounts.Address}</Text>
           <Text>Email: {accounts.Email}</Text>
+          <Text>Password: {accounts.Password}</Text>
           <Text>Phone: {accounts.Phone}</Text>
           <Text>isAdmin: {accounts.isAdmin}</Text>
           <Text />
@@ -124,8 +125,8 @@ const Home = ({ navigation }) => {
         <Hero imageName={imageName} />
         <NavBtnBox navigation={navigation} />
         {/* <Button title="test" onPress={() => insertData()} />
-        <Button title="try" onPress={() => console.log(accounts)} />
-        {showAccounts()} */}
+        <Button title="try" onPress={() => console.log(accounts)} />*/}
+        {showAccounts()}
       </ScrollView>
     </SafeAreaView>
     // </ImageBackground>
