@@ -6,13 +6,16 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Inputs from "./Inputs";
 import LoginBtn from "./LoginBtn";
 import { authenticateUser, deleteAccount } from "../../../databaseHelper";
+import UserContext from "../../../UserContext";
 
 const LoginBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;
+  //receive the function to update the user in the context
+  const { updateUser } = useContext(UserContext);
   //hold the user inputted data
   const [userData, setUserData] = useState({
     email: "",
@@ -31,9 +34,11 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
     try {
       const user = await authenticateUser(userData.email, userData.password);
       if (user) {
+        //if user is found, update the user in the context with the user object
+        updateUser(user);
         // Successful login, navigate to the next screen or perform other actions
         console.log("Login successful:", user);
-        navigation.navigate("Home");
+        navigation.navigate("DrawerScreens");
       } else {
         // Display error message for invalid credentials
         Alert.alert(
@@ -94,7 +99,9 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
       <TouchableOpacity style={styles.loginBtn} onPress={() => handleLogin()}>
         <Text style={styles.loginBtnTxt}>{btnTxt}</Text>
       </TouchableOpacity>
-      <TouchableOpacity
+
+      {/*delete button used for debugging*/}
+      {/* <TouchableOpacity
         onPress={() => {
           for (let accID = 2; accID < 22; accID++) {
             handleDelete(accID);
@@ -102,7 +109,7 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
         }}
       >
         <Text>Delete account</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -148,6 +155,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // backgroundColor: "#fff",
     height: 60,
+    paddingLeft: 5,
     // shadowColor: "#000",
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)

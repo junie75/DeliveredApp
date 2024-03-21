@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   navButtonText: {
     // fontFamily: "System",
     marginLeft: 10,
+    // color: "#BBB0C1",
   },
 
   navIcon: {

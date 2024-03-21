@@ -6,12 +6,14 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { insertAccount } from "../../../databaseHelper";
 import Inputs from "./Inputs";
+import UserContext from "../../../UserContext";
 
 const SignUpBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;
+  const { updateUser } = useContext(UserContext);
 
   //hold the user inputted data
   const [userData, setUserData] = useState({
@@ -38,7 +40,8 @@ const SignUpBox = ({ arr, navigation, btnTxt }) => {
     try {
       await insertAccount(fname, lname, email, password);
       console.log("Account inserted successfuly");
-      navigation.navigate("Home");
+      // updateUser(insertedUser);
+      navigation.navigate("Login");
     } catch (e) {
       Alert.alert(`Error inserting ${fname}`, e.message);
     }
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // backgroundColor: "#fff",
     height: 60,
+    paddingLeft: 5,
     // shadowColor: "#000",
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)

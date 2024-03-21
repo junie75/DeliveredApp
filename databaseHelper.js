@@ -41,17 +41,55 @@ export const getAccounts = (successCallback) => {
 };
 
 //insert a singular account into the database
+// export const insertAccount = (name, lname, email, password) => {
+//   return new Promise((resolve, reject) => {
+//     db.transaction(
+//       (tx) => {
+//         tx.executeSql(
+//           "INSERT INTO Accounts (Fname, Lname, Email, Password) values (?, ?, ?, ?)",
+//           [name, lname, email, password],
+//           (_, result) => {
+//             console.log("Account successfully inserted");
+//             resolve(result);
+//             // Fetch the inserted user
+//             // tx.executeSql(
+//             //   "SELECT * FROM Accounts WHERE AccID = ?",
+//             //   [result.insertId],
+//             //   (_, resultSet) => {
+//             //     const insertedUser = resultSet.rows.item(0);
+//             //     // Resolve with the inserted user and other relevant information
+//             //     resolve(insertedUser);
+//             //   }
+//             // );
+//           },
+//           (_, error) => {
+//             reject(error);
+//           }
+//         );
+//       }
+//       // resolve,
+//       // reject
+//     );
+//   });
+// };
 export const insertAccount = (name, lname, email, password) => {
   return new Promise((resolve, reject) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
           "INSERT INTO Accounts (Fname, Lname, Email, Password) values (?, ?, ?, ?)",
-          [name, lname, email, password]
+          [name, lname, email, password],
+          (_, resultSet) => {
+            console.log("Account successfully inserted");
+            resolve(resultSet);
+          },
+          (_, error) => {
+            reject(error);
+          }
         );
-      },
-      resolve,
-      reject
+      }
+      // resolve,
+      // reject
     );
   });
 };
@@ -107,6 +145,45 @@ export const authenticateUser = (email, password) => {
         }
       );
     });
+  });
+};
+
+export const updateAccount = async (
+  newFname,
+  newLname,
+  newAddress,
+  newPhone,
+  newEmail,
+  newPassword,
+  AccID
+) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `UPDATE Accounts SET Fname=?, Lname=?, Address=?, Phone=?, Email=?, Password=? WHERE AccID=?;`,
+          [
+            newFname,
+            newLname,
+            newAddress,
+            newPhone,
+            newEmail,
+            newPassword,
+            AccID,
+          ],
+          (_, result) => {
+            console.log("Account updated successfully");
+            resolve(result);
+          },
+          (_, error) => {
+            console.error("Error updating account:", error);
+            reject(error);
+          }
+        );
+      }
+      // reject,
+      // resolve
+    );
   });
 };
 

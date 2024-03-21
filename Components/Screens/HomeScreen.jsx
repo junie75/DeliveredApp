@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -15,12 +15,16 @@ import {
 import Header from "./homeComp/Header";
 import Hero from "./homeComp/Hero";
 import NavBtnBox from "./homeComp/NavBtnBox";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 // import DeliveredDB from "../../DeliveredDB";
 //navigation prop used to navigate between pages
 import { getAccounts, insertAccount } from "../../databaseHelper";
+import UserContext from "../../UserContext";
+
 const Home = ({ navigation }) => {
   const [newDelivery, setNewDelivery] = useState(true);
   const [accounts, setAccounts] = useState([]);
+  const { user } = useContext(UserContext);
 
   //useEffect checks state of newDelivery and displays the alert
   useEffect(() => {
@@ -105,7 +109,9 @@ const Home = ({ navigation }) => {
     });
   };
 
-  const imageName = "homeHero";
+  // const imageName = "homeHero";
+  const imageName = "onBoardHero";
+  // const Drawer = createDrawerNavigator();
   return (
     // <ImageBackground
     //   source={require("../assets/AppBackground.png")}
@@ -119,16 +125,21 @@ const Home = ({ navigation }) => {
     //     backgroundColor: "blue",
     //   }}
     // >
+    // <Drawer.Navigator>
+    // <>
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Header showMenu={true} />
+        <Header showMenu={true} navigation={navigation} />
+        {/* <Text style={styles.welcomeTxt}>Welcome, {user.Fname}</Text> */}
         <Hero imageName={imageName} />
         <NavBtnBox navigation={navigation} />
         {/* <Button title="test" onPress={() => insertData()} />
         <Button title="try" onPress={() => console.log(accounts)} />*/}
-        {showAccounts()}
+        {/* {showAccounts()} */}
       </ScrollView>
     </SafeAreaView>
+    // </>
+    //* </Drawer.Navigator> */}
     // </ImageBackground>
   );
 };
@@ -142,6 +153,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     backgroundColor: "#fff",
+  },
+  welcomeTxt: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginLeft: 15,
+    // alignContent: "center",
+    // textAlign: "center",
+    color: "#BBB0C1",
   },
   // header: {
   //   // borderColor: "black",

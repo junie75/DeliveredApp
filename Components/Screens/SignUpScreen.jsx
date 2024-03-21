@@ -18,7 +18,7 @@ const SignUp = ({ navigation }) => {
       <KeyboardAwareScrollView>
         <View style={styles.container} behavior="position">
           <Header showMenu={false} />
-          <Text style={styles.headerText}>Create Account</Text>
+          {/* <Text style={styles.headerText}>Create Account</Text> */}
           <Hero imageName={imageName} />
           <SignUpBox
             arr={[
