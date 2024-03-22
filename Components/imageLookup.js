@@ -6,4 +6,11 @@ export const imageLookup = {
   howToImage: require("../assets/howToImage.png"),
   createAccImage: require("../assets/createAccHero.png"),
   profileHero: require("../assets/profileHero2.png"),
+  pckgIcon: require("../assets/package-svgrepo-com.png"),
+  globeIcon: require("../assets/globe-svgrepo-com.png"),
+  aboutIcon: require("../assets/about-svgrepo-com.png"),
+  storageIcon: require("../assets/storage-management-blue.png"),
+  mailIcon: require("../assets/mail-management-blue.png"),
+  dbIcon: require("../assets/database-management-blue.png"),
+  issuesIcon: require("../assets/resolve-issues-blue.png"),
 };

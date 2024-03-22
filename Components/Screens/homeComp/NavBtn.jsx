@@ -1,16 +1,18 @@
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native";
 import React from "react";
+import { imageLookup } from "../../imageLookup";
 
-const NavBtn = ({ navigation, navigateString, iconURI, text }) => {
+const NavBtn = ({ navigation, navigateString, iconURI, text, imageName }) => {
   return (
     <TouchableOpacity
       style={styles.navButtons}
       onPress={() => navigation.navigate(navigateString)}
     >
       <Image
-        source={{
-          uri: iconURI,
-        }}
+        // source={{
+        //   uri: iconURI,
+        // }}
+        source={imageLookup[imageName]}
         style={styles.navIcon}
       />
       <Text style={styles.navButtonText}>{text}</Text>
@@ -47,8 +49,8 @@ const styles = StyleSheet.create({
   },
 
   navIcon: {
-    width: 64,
-    height: 64,
+    width: 58,
+    height: 58,
   },
 });
 

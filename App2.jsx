@@ -103,11 +103,11 @@ export default function App() {
     //create tables if they don't exist
     createTables();
     console.log("tables created succdessfully");
-    return async () => {
-      //optionally close the db when the app is unmounted
-      await database.closeAsync();
-      console.log("database closed successfully");
-    };
+    // return async () => {
+    //   //optionally close the db when the app is unmounted
+    //   await database.closeAsync();
+    //   console.log("database closed successfully");
+    // };
   }, []);
   return (
     <NavigationContainer>
@@ -143,7 +143,11 @@ export default function App() {
           <Stack.Screen name="Deliveries" component={DeliveriesScreen} />
           <Stack.Screen name="Mailroom Map" component={MailMapScreen} />
           <Stack.Screen name="How-To Page" component={HowToScreen} />
-          <Stack.Screen name="Admin Home" component={AdminHome} />
+          <Stack.Screen
+            name="Admin Home"
+            component={AdminHome}
+            options={{ headerShown: false }}
+          />
           {/* <Home></Home> */}
         </Stack.Navigator>
       </UserProvider>

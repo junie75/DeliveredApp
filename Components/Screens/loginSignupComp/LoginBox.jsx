@@ -38,7 +38,11 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
         updateUser(user);
         // Successful login, navigate to the next screen or perform other actions
         console.log("Login successful:", user);
-        navigation.navigate("DrawerScreens");
+
+        // navigation.navigate("DrawerScreens");
+        user.isAdmin == 1
+          ? navigation.navigate("Admin Home")
+          : navigation.navigate("DrawerScreens");
       } else {
         // Display error message for invalid credentials
         Alert.alert(
