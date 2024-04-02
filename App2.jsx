@@ -25,7 +25,9 @@ import OnboardingScreen from "./Components/Screens/OnboardingScreen";
 import AdminHome from "./Components/adminScreens/AdminHome";
 import ProfileScreen from "./Components/Screens/ProfileScreen";
 import { openDatabase, createTables } from "./databaseHelper";
-import UserContext, { UserProvider } from "./UserContext";
+import UserContext, { UserProvider } from "./context/UserContext";
+import StorageManagement from "./Components/adminScreens/StorageManagement";
+import ResolveIssues from "./Components/adminScreens/ResolveIssues";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -146,9 +148,18 @@ export default function App() {
           <Stack.Screen
             name="Admin Home"
             component={AdminHome}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, title: "Home" }}
           />
-          {/* <Home></Home> */}
+          <Stack.Screen
+            name="Storage Screen"
+            component={StorageManagement}
+            options={{ title: "Storage Management" }}
+          />
+          <Stack.Screen
+            name="Resolve Issues"
+            component={ResolveIssues}
+            options={{ title: "Check Mail Requests" }}
+          />
         </Stack.Navigator>
       </UserProvider>
     </NavigationContainer>

@@ -10,7 +10,7 @@ import React, { useState, useContext } from "react";
 import Inputs from "./Inputs";
 import LoginBtn from "./LoginBtn";
 import { authenticateUser, deleteAccount } from "../../../databaseHelper";
-import UserContext from "../../../UserContext";
+import UserContext from "../../../context/UserContext";
 
 const LoginBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;

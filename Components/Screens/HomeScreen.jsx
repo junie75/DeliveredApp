@@ -19,7 +19,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 // import DeliveredDB from "../../DeliveredDB";
 //navigation prop used to navigate between pages
 import { getAccounts, insertAccount } from "../../databaseHelper";
-import UserContext from "../../UserContext";
+import UserContext from "../../context/UserContext";
 
 const Home = ({ navigation }) => {
   const [newDelivery, setNewDelivery] = useState(true);

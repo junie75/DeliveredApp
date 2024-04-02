@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Hero from "./homeComp/Hero";
 import Header from "./homeComp/Header";
-import UserContext from "../../UserContext";
+import UserContext from "../../context/UserContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { updateAccount } from "../../databaseHelper";
 
@@ -42,6 +42,7 @@ const ProfileScreen = ({ navigation }) => {
   ) => {
     try {
       const result = await updateAccount(
+        //send the user info to the database and receive result
         newFname,
         newLname,
         newAddress,
@@ -51,7 +52,7 @@ const ProfileScreen = ({ navigation }) => {
         AccID
       );
       console.log("User updated successfully:", result);
-      updateUser(editedUser);
+      updateUser(editedUser); //change the user information in the context
       setEditMode(false); // Exit edit mode
     } catch (error) {
       // Handle errors if any

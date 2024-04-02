@@ -13,4 +13,7 @@ export const imageLookup = {
   mailIcon: require("../assets/mail-management-blue.png"),
   dbIcon: require("../assets/database-management-blue.png"),
   issuesIcon: require("../assets/resolve-issues-blue.png"),
+  alertRed: require("../assets/alert-red.png"),
+  alertOrange: require("../assets/alert-orange.png"),
+  alertGreen: require("../assets/alert-green.png"),
 };

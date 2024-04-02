@@ -9,7 +9,7 @@ import {
 import React, { useContext, useState } from "react";
 import { insertAccount } from "../../../databaseHelper";
 import Inputs from "./Inputs";
-import UserContext from "../../../UserContext";
+import UserContext from "../../../context/UserContext";
 
 const SignUpBox = ({ arr, navigation, btnTxt }) => {
   const inputs = arr;

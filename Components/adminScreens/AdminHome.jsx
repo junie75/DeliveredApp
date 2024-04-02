@@ -14,15 +14,19 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 const AdminHome = ({ navigation }) => {
+  //icon images
   imageName1 = "storageIcon";
   imageName2 = "mailIcon";
   imageName3 = "issuesIcon";
   imageName4 = "dbIcon";
+
+  //load fonts
   const [fontsLoaded, fontError] = useFonts({
     "FragmentMono-Regular": require("../../assets/fonts/FragmentMono-Regular.ttf"),
     "FragmentMono-Italic": require("../../assets/fonts/FragmentMono-Italic.ttf"),
   });
 
+  //check if fonts have loaded
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
@@ -41,7 +45,12 @@ const AdminHome = ({ navigation }) => {
           <Text style={styles.portalTxt}>Admin Portal</Text>
           <View style={styles.btnContainer}>
             <View style={styles.btn}>
-              <TouchableOpacity style={styles.btnbackground}>
+              <TouchableOpacity
+                style={styles.btnbackground}
+                onPress={() => {
+                  navigation.navigate("Storage Screen");
+                }}
+              >
                 <Image source={imageLookup[imageName1]} style={styles.icon} />
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Storage Management</Text>
@@ -53,7 +62,10 @@ const AdminHome = ({ navigation }) => {
               <Text style={styles.btnTxt}>Mail Management</Text>
             </View>
             <View style={styles.btn}>
-              <TouchableOpacity style={styles.btnbackground}>
+              <TouchableOpacity
+                style={styles.btnbackground}
+                onPress={() => navigation.navigate("Resolve Issues")}
+              >
                 <Image source={imageLookup[imageName3]} style={styles.icon} />
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Resolve Issues</Text>
@@ -179,10 +191,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     padding: 10,
     marginBottom: 80,
-    shadowColor: "#000",
-    // shadowColor: "#007AFF",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
+    // shadowColor: "#000",
+    // // shadowColor: "#007AFF",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
     // shadowRadius: 4, // Shadow radius (adjust as needed)
   },
 
