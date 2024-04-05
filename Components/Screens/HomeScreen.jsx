@@ -135,7 +135,7 @@ const Home = ({ navigation }) => {
         <NavBtnBox navigation={navigation} />
         {/* <Button title="test" onPress={() => insertData()} />
         <Button title="try" onPress={() => console.log(accounts)} />*/}
-        {/* {showAccounts()} */}
+        {showAccounts()}
       </ScrollView>
     </SafeAreaView>
     // </>

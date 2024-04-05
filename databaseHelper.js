@@ -16,10 +16,23 @@ export const createTables = () => {
         "(AccID INTEGER PRIMARY KEY AUTOINCREMENT, Fname TEXT, Lname TEXT, Password TEXT, Address TEXT, Email TEXT, Phone TEXT, isAdmin INTEGER)",
       [],
       (result) => {
-        console.log("Table created successfully");
+        console.log("Accounts Table created successfully");
       },
       (error) => {
-        console.log("Create table error", error);
+        console.log("Create Accounts table error", error);
+      }
+    );
+
+    tx.executeSql(
+      //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
+      "CREATE TABLE IF NOT EXISTS Deliveries" +
+        "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, TrackingNum String, isPickedUp INTEGER)",
+      [],
+      (result) => {
+        console.log("Deliveries Table created successfully");
+      },
+      (error) => {
+        console.log("Create Deliveries table error", error);
       }
     );
   });
@@ -204,3 +217,46 @@ export const updateAccount = async (
 //       );
 //     });
 //   };
+
+//search for a user account by last name
+export const getAccountByLName = (Lname) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      //null is the parameters, this is parameterized query to prevent injection attack
+      searchString = "%" + Lname + "%";
+      tx.executeSql(
+        "SELECT * FROM Accounts WHERE Lname LIKE ?",
+        [searchString],
+        (_, resultSet) => {
+          resolve(resultSet);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const insertDelivery = (AccID, MailType, DateReceived, TrackingNum) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          "INSERT INTO Deliveries (AccID, MailType, DateReceived, TrackingNum) values (?, ?, ?, ?)",
+          [AccID, MailType, DateReceived, TrackingNum],
+          (_, resultSet) => {
+            console.log("Delivery successfully inserted");
+            console.log(resultSet);
+            resolve(resultSet);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
+      }
+      // resolve,
+      // reject
+    );
+  });
+};

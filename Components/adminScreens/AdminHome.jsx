@@ -7,11 +7,12 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import Header from "../Screens/homeComp/Header";
 import { imageLookup } from "../imageLookup";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import UserContext from "../../context/UserContext";
 
 const AdminHome = ({ navigation }) => {
   //icon images
@@ -25,6 +26,8 @@ const AdminHome = ({ navigation }) => {
     "FragmentMono-Regular": require("../../assets/fonts/FragmentMono-Regular.ttf"),
     "FragmentMono-Italic": require("../../assets/fonts/FragmentMono-Italic.ttf"),
   });
+
+  const { updateUser } = useContext(UserContext);
 
   //check if fonts have loaded
   const onLayoutRootView = useCallback(async () => {
@@ -56,7 +59,12 @@ const AdminHome = ({ navigation }) => {
               <Text style={styles.btnTxt}>Storage Management</Text>
             </View>
             <View style={styles.btn}>
-              <TouchableOpacity style={styles.btnbackground}>
+              <TouchableOpacity
+                style={styles.btnbackground}
+                onPress={() => {
+                  navigation.navigate("Scan Mail");
+                }}
+              >
                 <Image source={imageLookup[imageName2]} style={styles.icon} />
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Mail Management</Text>
@@ -79,7 +87,15 @@ const AdminHome = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.logout}>
+          <TouchableOpacity
+            style={styles.logout}
+            onPress={() => {
+              // Implement your logout logic here
+              // For example, clearing user session or token
+              updateUser(null);
+              navigation.navigate("Login");
+            }}
+          >
             <Text style={styles.logoutTxt}>Logout</Text>
           </TouchableOpacity>
         </View>

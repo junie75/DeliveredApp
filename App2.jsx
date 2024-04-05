@@ -28,6 +28,7 @@ import { openDatabase, createTables } from "./databaseHelper";
 import UserContext, { UserProvider } from "./context/UserContext";
 import StorageManagement from "./Components/adminScreens/StorageManagement";
 import ResolveIssues from "./Components/adminScreens/ResolveIssues";
+import ScanMail from "./Components/adminScreens/ScanMail";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -159,6 +160,11 @@ export default function App() {
             name="Resolve Issues"
             component={ResolveIssues}
             options={{ title: "Check Mail Requests" }}
+          />
+          <Stack.Screen
+            name="Scan Mail"
+            component={ScanMail}
+            options={{ title: "Mail Management" }}
           />
         </Stack.Navigator>
       </UserProvider>
