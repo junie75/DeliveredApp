@@ -260,3 +260,37 @@ export const insertDelivery = (AccID, MailType, DateReceived, TrackingNum) => {
     );
   });
 };
+
+export const getUserDeliveriesByID = (AccID, successCallback) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM Deliveries WHERE AccID = ?",
+      [AccID],
+      (txObj, resultSet) => successCallback(resultSet.rows._array),
+      (txObj, error) => console.log(error)
+    );
+  });
+};
+
+export const getUserDeliveries = (AccID) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM Deliveries WHERE AccID = ?",
+        [AccID],
+        (_, { rows }) => {
+          if (rows.length > 0) {
+            const deliveries = rows._array; // Assuming username is unique
+            resolve(deliveries);
+            console.log(deliveries);
+          } else {
+            resolve(null); // No user found with the provided credentials
+          }
+        },
+        (_, error) => {
+          reject(error); // Error occurred during SQL execution
+        }
+      );
+    });
+  });
+};

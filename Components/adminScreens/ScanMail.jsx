@@ -34,9 +34,31 @@ function EnterDelivery({ navigation, route }) {
     try {
       await insertDelivery(AccID, MailType, DateReceived, TrackingNum);
       Alert.alert(
-        `${MailType} has been successfully entered into the database`
+        "Insertion Successful",
+        `${MailType} has been successfully entered into the database`,
+        //array for the buttons displayed on the alert
+        [
+          {
+            text: "Home",
+            onPress: () => {
+              console.log("Home pressed");
+              navigation.navigate("Admin Home");
+            },
+            // style: "cancel",
+          },
+          {
+            text: "Scan More",
+            onPress: () => {
+              console.log("Scan more pressed");
+              // console.log(myDB);
+              // console.log(accounts);
+              navigation.navigate("Choose Delivery");
+            },
+            isPreferred: "true",
+          },
+        ]
       );
-      navigation.navigate("Admin Home");
+      // navigation.navigate("Admin Home");
     } catch (e) {
       Alert.alert(`Error inserting ${fname}`, e.message);
     }
@@ -251,7 +273,7 @@ const ScanMail = ({ navigation }) => {
   return (
     <ScanStack.Navigator>
       <ScanStack.Screen
-        name="Choose Entry"
+        name="Choose Delivery"
         component={ChooseDelivery}
         options={{ headerShown: false }}
       />

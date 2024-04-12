@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,29 +8,115 @@ import {
   View,
 } from "react-native";
 
+import { getUserDeliveries, getUserDeliveriesByID } from "../../databaseHelper";
+
+import UserContext from "../../context/UserContext";
+
 const DeliveriesScreen = () => {
+  const { user } = useContext(UserContext);
+  const [userDeliveries, setUserDeliveries] = useState([]);
+  const [userHasDel, setUserHasDel] = useState(false);
+
+  useEffect(() => {
+    getUserDeliveriesByID(user.AccID, setUserDeliveries);
+  }, []);
+
+  // const getDeliveries = async () => {
+  //   console.log("test");
+  //   const deliveries = await getUserDeliveries(user.AccID);
+  //   return deliveries;
+  // };
+
+  const convertDateReceived = (dateReceived) => {
+    const dateObject = new Date(dateReceived); // Convert DateTime string to JavaScript Date object
+
+    // Format date
+    const dateString = dateObject.toLocaleDateString(); // Get date string in local format
+
+    // Format time
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    const timeString = dateObject.toLocaleTimeString([], options); // Get time string in local format
+
+    return { dateString, timeString }; // Return object containing formatted date and time strings
+  };
+
   const showDeliveries = () => {
-    let deliveries = [];
-    for (let i = 0; i < 5; i++) {
-      deliveries.push(
-        <View key={i} style={styles.deliveryBox}>
+    // const deliveries = getDeliveries();
+    // const deliveries = await getUserDeliveries(user.AccID);
+    // console.log(deliveries);
+
+    // if (!Array.isArray(deliveries) || deliveries.length === 0) {
+    //   return (
+    //     <View style={{ justifyContent: "center", alignItems: "center" }}>
+    //       <Text>No deliveries to show</Text>
+    //     </View>
+    //   );
+    // }
+    return userDeliveries.map((delivery, index) => {
+      const { dateString, timeString } = convertDateReceived(
+        delivery.DateReceived
+      );
+
+      return (
+        <View key={index} style={styles.deliveryBox}>
           <View style={styles.deliveryHeader}>
-            <Text style={styles.headerName}>Package</Text>
+            <Text style={styles.headerName}>{delivery.MailType}</Text>
 
             <View style={styles.headerDetails}>
-              <Text style={styles.details}>11/21/23</Text>
-              <Text style={styles.details}>12:45pm</Text>
+              <Text style={styles.details}>{dateString}</Text>
+              <Text style={styles.details}>{timeString}</Text>
             </View>
           </View>
 
-          <Text style={styles.trackNum}>Tracking Number: 834982092004</Text>
+          <Text style={styles.trackNum}>
+            Tracking Number: {delivery.TrackingNum}
+          </Text>
           <Text style={styles.location}>Location: Treadaway Mailroom</Text>
         </View>
       );
-    }
-
-    return deliveries;
+    });
   };
+
+  // const showDeliveries = async () => {
+  //   try {
+  //     const deliveries = await getUserDeliveries(user.AccID);
+
+  //     if (!Array.isArray(deliveries) || deliveries.length === 0) {
+  //       return (
+  //         <View style={{ justifyContent: "center", alignItems: "center" }}>
+  //           <Text>No deliveries to show</Text>
+  //         </View>
+  //       );
+  //     }
+
+  //     return (
+  //       <View>
+  //         <Text>Test</Text>
+  //         {/* {deliveries.map((delivery, index) => (
+  //           <View key={index} style={styles.deliveryBox}>
+  //             <Text style={styles.headerName}>{delivery.MailType}</Text>
+  //             <Text style={styles.details}>
+  //               Received: {delivery.DateReceived}
+  //             </Text>
+  //             <Text style={styles.details}>
+  //               Tracking Number: {delivery.TrackingNum || "N/A"}
+  //             </Text>
+  //             <Text style={styles.details}>Location: {delivery.Location}</Text>
+  //           </View>
+  //         ))} */}
+  //       </View>
+  //     );
+  //   } catch (error) {
+  //     console.error("Error fetching deliveries:", error);
+  //     return (
+  //       <View style={{ justifyContent: "center", alignItems: "center" }}>
+  //         <Text>Error fetching deliveries</Text>
+  //       </View>
+  //     );
+  //   }
+  // };
+
+  // return deliveries;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -38,6 +124,11 @@ const DeliveriesScreen = () => {
         <View style={styles.container}>
           <View style={styles.boxContainer}>
             {/* delivery box */}
+            {/* {userHasDel ? (
+              showDeliveries()
+            ) : (
+              <Text>No deliveries to show.</Text>
+            )} */}
             {showDeliveries()}
           </View>
 
@@ -71,6 +162,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     marginBottom: 80,
+    // justifyContent: "center",
   },
 
   deliveryBox: {
