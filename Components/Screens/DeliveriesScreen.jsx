@@ -69,9 +69,15 @@ const DeliveriesScreen = () => {
           </View>
 
           <Text style={styles.trackNum}>
-            Tracking Number: {delivery.TrackingNum}
+            Tracking Number:{" "}
+            {delivery.TrackingNum != "null" ? delivery.TrackingNum : "N/A"}
           </Text>
-          <Text style={styles.location}>Location: Treadaway Mailroom</Text>
+          <Text style={styles.location}>
+            Location:{" "}
+            {delivery.MailType === "Package"
+              ? "Treadaway Mailroom"
+              : user.Address}
+          </Text>
         </View>
       );
     });

@@ -24,7 +24,7 @@ export const createTables = () => {
     );
 
     tx.executeSql(
-      //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
+      // isPickedUp is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS Deliveries" +
         "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, TrackingNum String, isPickedUp INTEGER)",
       [],
@@ -243,7 +243,7 @@ export const insertDelivery = (AccID, MailType, DateReceived, TrackingNum) => {
     db.transaction(
       (tx) => {
         tx.executeSql(
-          "INSERT INTO Deliveries (AccID, MailType, DateReceived, TrackingNum) values (?, ?, ?, ?)",
+          "INSERT INTO Deliveries (AccID, MailType, DateReceived, TrackingNum, isPickedUp) values (?, ?, ?, ?, 0)",
           [AccID, MailType, DateReceived, TrackingNum],
           (_, resultSet) => {
             console.log("Delivery successfully inserted");
@@ -292,5 +292,38 @@ export const getUserDeliveries = (AccID) => {
         }
       );
     });
+  });
+};
+
+export const getPackagesStillStored = (successCallback) => {
+  db.transaction((tx) => {
+    //null is the parameters, this is parameterized query to prevent injection attack
+    tx.executeSql(
+      "SELECT * FROM Deliveries WHERE MailType = 'Package' AND isPickedUp = 0 ",
+      null,
+      //success callback function
+      (txObj, resultSet) => {
+        successCallback(resultSet.rows._array);
+        // console.log("result is" + resultSet.rows._array);
+      }, //setting the results as our accounts array
+      //error callback function
+      (txObj, error) => console.log(error) //logs if there are errors executing SQL
+    );
+  });
+};
+
+//fix previous deliveries
+export const updateAllDeliveriesIsPickedUpToZero = () => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "UPDATE Deliveries SET isPickedUp = 0 WHERE MailType = 'Package'",
+      [],
+      (txObj, resultSet) => {
+        console.log("isPickedUp updated successfully");
+      },
+      (txObj, error) => {
+        console.log("Error updating isPickedUp:", error);
+      }
+    );
   });
 };
