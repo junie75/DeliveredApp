@@ -26,7 +26,7 @@ export const createTables = () => {
     tx.executeSql(
       // isPickedUp is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS Deliveries" +
-        "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, TrackingNum String, isPickedUp INTEGER)",
+        "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, DatePickedUp DateTime, TrackingNum String, isPickedUp INTEGER)",
       [],
       (result) => {
         console.log("Deliveries Table created successfully");
@@ -37,6 +37,51 @@ export const createTables = () => {
     );
   });
 };
+
+/***USED ONCE TO EDIT DELIVERIES TABLE */
+
+// export const createTables = () => {
+//   db.transaction((tx) => {
+//     tx.executeSql(
+//       //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
+//       "CREATE TABLE IF NOT EXISTS Accounts" +
+//         "(AccID INTEGER PRIMARY KEY AUTOINCREMENT, Fname TEXT, Lname TEXT, Password TEXT, Address TEXT, Email TEXT, Phone TEXT, isAdmin INTEGER)",
+//       [],
+//       (result) => {
+//         console.log("Accounts Table created successfully");
+//       },
+//       (error) => {
+//         console.log("Create Accounts table error", error);
+//       }
+//     );
+
+//     tx.executeSql(
+//       // isPickedUp is a boolean value that can either be 0 or 1
+//       "CREATE TABLE IF NOT EXISTS Deliveries" +
+//         "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, TrackingNum String, isPickedUp INTEGER)",
+//       [],
+//       (result) => {
+//         console.log("Deliveries Table created successfully");
+//         // Add new column to Deliveries table after table creation
+//         tx.executeSql(
+//           "ALTER TABLE Deliveries ADD COLUMN DatePickedUp DateTime",
+//           [],
+//           (result) => {
+//             console.log(
+//               "New column 'DatePickedUp' added to Deliveries table successfully"
+//             );
+//           },
+//           (error) => {
+//             console.log("Error adding new column to Deliveries table", error);
+//           }
+//         );
+//       },
+//       (error) => {
+//         console.log("Create Deliveries table error", error);
+//       }
+//     );
+//   });
+// };
 
 //get all of the accounts in the array
 export const getAccounts = (successCallback) => {
@@ -324,6 +369,66 @@ export const updateAllDeliveriesIsPickedUpToZero = () => {
       (txObj, error) => {
         console.log("Error updating isPickedUp:", error);
       }
+    );
+  });
+};
+
+export const getPackagesByTrackingNum = (trackingNum, successCallback) => {
+  db.transaction((tx) => {
+    //null is the parameters, this is parameterized query to prevent injection attack
+    tx.executeSql(
+      "SELECT * FROM Deliveries WHERE MailType = 'Package' AND TrackingNum = ? ",
+      [trackingNum],
+      //success callback function
+      (txObj, resultSet) => {
+        successCallback(resultSet.rows._array);
+        // console.log("result is" + resultSet.rows._array);
+      }, //setting the results as our accounts array
+      //error callback function
+      (txObj, error) => console.log(error) //logs if there are errors executing SQL
+    );
+  });
+};
+
+//search for a user account by last name
+export const getPackageByTrackingNum = (trackingNum) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      //null is the parameters, this is parameterized query to prevent injection attack
+      // searchString = "%" + Lname + "%";
+      tx.executeSql(
+        "SELECT Deliveries.DatePickedUp, Deliveries.DeliveryID, Deliveries.TrackingNum, Deliveries.DateReceived, Accounts.Fname, Accounts.Lname, Accounts.Address FROM Deliveries JOIN Accounts ON Deliveries.AccID = Accounts.AccID WHERE Deliveries.MailType = 'Package' AND isPickedUp = 0 AND Deliveries.TrackingNum = ? ",
+        [trackingNum],
+        (_, resultSet) => {
+          resolve(resultSet);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const updatePackageIsPickedUp = async (deliveryID, datePickedUp) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `UPDATE Deliveries SET isPickedUp = 1, DatePickedUp = ? WHERE DeliveryID=?`,
+          [datePickedUp, deliveryID],
+          (_, result) => {
+            console.log("Package updated successfully");
+            resolve(result);
+          },
+          (_, error) => {
+            console.error("Error updating package:", error);
+            reject(error);
+          }
+        );
+      }
+      // reject,
+      // resolve
     );
   });
 };

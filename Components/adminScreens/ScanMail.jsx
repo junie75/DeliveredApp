@@ -12,7 +12,13 @@ import {
 // import { BarCodeScanner } from "expo-barcode-scanner";
 import { AutoFocus, Camera } from "expo-camera";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { getAccountByLName, insertDelivery } from "../../databaseHelper";
+import {
+  getAccountByLName,
+  getPackageByTrackingNum,
+  getPackagesByTrackingNum,
+  insertDelivery,
+  updatePackageIsPickedUp,
+} from "../../databaseHelper";
 
 const ScanStack = createNativeStackNavigator();
 
@@ -184,6 +190,7 @@ function FindUser({ navigation, route }) {
 
 //page to determine if entering new package or new letter
 function ChooseDelivery({ navigation }) {
+  const next = "findUser";
   return (
     <View style={styles.container}>
       <View style={styles.containerCard}>
@@ -193,7 +200,7 @@ function ChooseDelivery({ navigation }) {
         <View style={styles.btnContainer}>
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => navigation.navigate("Scan Package")}
+            onPress={() => navigation.navigate("Scan Package", { next })}
           >
             <Text style={styles.txt}>New Package</Text>
           </TouchableOpacity>
@@ -210,7 +217,111 @@ function ChooseDelivery({ navigation }) {
   );
 }
 
-function ScanPackage({ navigation }) {
+function PackagePickup({ navigation, route }) {
+  const { data } = route.params || {}; //receives tracking number from scanPackage
+  const [packageInfo, setPackageInfo] = useState([]);
+  const trackingNum = data;
+
+  //call getResults upon loading of the page
+  useEffect(() => {
+    getResults();
+  }, []);
+
+  //change package to picked up in the database
+  const updatePackageToPickedUp = async (deliveryID) => {
+    const currentDate = new Date(); //stamp data of package receival
+    const datePickedUp = currentDate
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "); //format to fit into db correctly
+    try {
+      const result = await updatePackageIsPickedUp(deliveryID, datePickedUp);
+      console.log("Package updated successfully:", result);
+    } catch (error) {
+      //handle errors if any
+      console.error("Error updating package:", error);
+    }
+  };
+
+  //get package by tracking number
+  const getResults = () => {
+    getPackageByTrackingNum(trackingNum)
+      .then((resultSet) => {
+        setPackageInfo(resultSet.rows._array); //retrive array of account objects
+        console.log(resultSet.rows._array);
+      })
+      .catch((error) => {
+        console.error("Error searching deliveries: ", error);
+      });
+  };
+
+  //display packages with the same tracking number
+  const showResults = () => {
+    return packageInfo.map((packageFound, index) => {
+      return (
+        <TouchableOpacity
+          key={index}
+          style={[styles.resultsBox, { alignItems: "flex-start" }]}
+          onPress={() => updatePackageToPickedUp(packageFound.DeliveryID)}
+        >
+          <Text style={styles.txt}>ID: {packageFound.DeliveryID}</Text>
+          <Text style={styles.txt}>
+            Recipient: {packageFound.Fname} {packageFound.Lname}
+          </Text>
+          <Text style={styles.txt}>Received: {packageFound.DateReceived}</Text>
+          <Text style={styles.txt}>Address: {packageFound.Address}</Text>
+          <Text style={styles.txt}>
+            Tracking Num: {packageFound.TrackingNum}
+          </Text>
+        </TouchableOpacity>
+      );
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>Package Pickup Screen</Text>
+      <View style={{ marginBottom: 30 }}>
+        <Text style={[styles.txt, { fontSize: 10, color: "red" }]}>
+          Tracking Number: {data}
+        </Text>
+      </View>
+      <ScrollView style={styles.containerCard}>{showResults()}</ScrollView>
+    </View>
+  );
+}
+
+//page to determine if entering new package or new letter
+function ChooseEntry({ navigation }) {
+  const next = "packagePickup";
+  return (
+    <View style={styles.container}>
+      <View style={styles.containerCard}>
+        <Text style={styles.txt}>
+          Is this a new delivery or a package pickup?
+        </Text>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Choose Delivery")}
+          >
+            <Text style={styles.txt}>New Delivery</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate("Scan Package", { next })}
+          >
+            <Text style={styles.txt}>Package Pickup</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View></View>
+    </View>
+  );
+}
+
+function ScanPackage({ navigation, route }) {
+  const { next } = route.params; //next has the next route scanPackage should call
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -225,7 +336,15 @@ function ScanPackage({ navigation }) {
     setScanned(true);
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     console.log(data);
-    navigation.navigate("Find User", { data });
+    //send tracking number to next page based on which function called it
+    if (next === "findUser") {
+      navigation.navigate("Find User", { data });
+    } else if (next === "packagePickup") {
+      navigation.navigate("Package Pickup", { data });
+    } else {
+      Alert.alert("Next route was not given");
+      navigation.navigate("Admin Home");
+    }
   };
 
   //display barcode scanner with device camera
@@ -272,6 +391,16 @@ function ScanPackage({ navigation }) {
 const ScanMail = ({ navigation }) => {
   return (
     <ScanStack.Navigator>
+      <ScanStack.Screen
+        name="Choose Entry"
+        component={ChooseEntry}
+        options={{ headerShown: false }}
+      />
+      <ScanStack.Screen
+        name="Package Pickup"
+        component={PackagePickup}
+        options={{ headerShown: false }}
+      />
       <ScanStack.Screen
         name="Choose Delivery"
         component={ChooseDelivery}
