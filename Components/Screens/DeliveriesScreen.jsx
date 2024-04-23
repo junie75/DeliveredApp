@@ -183,11 +183,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     // borderWidth: 1,
     // borderColor: "black",
-    height: 100,
+    height: 120,
     // marginBottom: 15,
     justifyContent: "space-evenly",
     borderBottomColor: "#BBB0C1",
     borderBottomWidth: 1,
+    paddingVertical: 15,
     marginBottom: 5,
   },
 

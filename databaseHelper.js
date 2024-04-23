@@ -344,7 +344,7 @@ export const getPackagesStillStored = (successCallback) => {
   db.transaction((tx) => {
     //null is the parameters, this is parameterized query to prevent injection attack
     tx.executeSql(
-      "SELECT * FROM Deliveries WHERE MailType = 'Package' AND isPickedUp = 0 ",
+      "SELECT Deliveries.DeliveryID, Deliveries.AccID, Deliveries.DateReceived, Accounts.Fname, Accounts.Lname FROM Deliveries JOIN Accounts ON Deliveries.AccID = Accounts.AccID WHERE Deliveries.MailType = 'Package' AND Deliveries.isPickedUp = 0 ",
       null,
       //success callback function
       (txObj, resultSet) => {
@@ -373,22 +373,22 @@ export const updateAllDeliveriesIsPickedUpToZero = () => {
   });
 };
 
-export const getPackagesByTrackingNum = (trackingNum, successCallback) => {
-  db.transaction((tx) => {
-    //null is the parameters, this is parameterized query to prevent injection attack
-    tx.executeSql(
-      "SELECT * FROM Deliveries WHERE MailType = 'Package' AND TrackingNum = ? ",
-      [trackingNum],
-      //success callback function
-      (txObj, resultSet) => {
-        successCallback(resultSet.rows._array);
-        // console.log("result is" + resultSet.rows._array);
-      }, //setting the results as our accounts array
-      //error callback function
-      (txObj, error) => console.log(error) //logs if there are errors executing SQL
-    );
-  });
-};
+// export const getPackagesByTrackingNum = (trackingNum, successCallback) => {
+//   db.transaction((tx) => {
+//     //null is the parameters, this is parameterized query to prevent injection attack
+//     tx.executeSql(
+//       "SELECT * FROM Deliveries WHERE MailType = 'Package' AND TrackingNum = ? ",
+//       [trackingNum],
+//       //success callback function
+//       (txObj, resultSet) => {
+//         successCallback(resultSet.rows._array);
+//         // console.log("result is" + resultSet.rows._array);
+//       }, //setting the results as our accounts array
+//       //error callback function
+//       (txObj, error) => console.log(error) //logs if there are errors executing SQL
+//     );
+//   });
+// };
 
 //search for a user account by last name
 export const getPackageByTrackingNum = (trackingNum) => {
@@ -430,5 +430,23 @@ export const updatePackageIsPickedUp = async (deliveryID, datePickedUp) => {
       // reject,
       // resolve
     );
+  });
+};
+
+export const deletePackage = async (id) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DELETE FROM Deliveries WHERE DeliveryID = ?",
+        [id],
+        (_, resultSet) => {
+          console.log("Delivery successfully deleted");
+          resolve(resultSet);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
   });
 };

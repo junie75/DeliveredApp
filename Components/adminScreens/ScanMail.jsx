@@ -276,6 +276,7 @@ function ChooseDelivery({ navigation }) {
   );
 }
 
+//****FUNCTIONALITY update package to picked up when user comes to pick up package */
 function PackagePickup({ navigation, route }) {
   const { data } = route.params || {}; //receives tracking number from scanPackage
   const [packageInfo, setPackageInfo] = useState([]);
@@ -288,7 +289,7 @@ function PackagePickup({ navigation, route }) {
 
   //change package to picked up in the database
   const updatePackageToPickedUp = async (deliveryID) => {
-    const currentDate = new Date(); //stamp data of package receival
+    const currentDate = new Date(); //stamp date of package receival
     const datePickedUp = currentDate
       .toISOString()
       .slice(0, 19)
@@ -296,9 +297,14 @@ function PackagePickup({ navigation, route }) {
     try {
       const result = await updatePackageIsPickedUp(deliveryID, datePickedUp);
       console.log("Package updated successfully:", result);
+      //display success message on screen
+      Alert.alert("Update Successful", "Package updated successfully");
+      //go home
+      navigation.navigate("Admin Home");
     } catch (error) {
       //handle errors if any
       console.error("Error updating package:", error);
+      Alert.alert("Error updating package:", error);
     }
   };
 
@@ -434,14 +440,22 @@ function ScanPackage({ navigation, route }) {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Welcome to the Barcode Scanner App!</Text> */}
-      <Text style={styles.paragraph}>Scan a barcode to start your job.</Text>
+      <Text
+        style={[
+          styles.paragraph,
+          styles.txt,
+          { marginTop: 30, marginHorizontal: 15, fontSize: 15 },
+        ]}
+      >
+        Scan a barcode to continue.
+      </Text>
       {renderCamera()}
       <TouchableOpacity
         style={styles.button}
         onPress={() => setScanned(false)}
         disabled={scanned}
       >
-        <Text style={styles.buttonText}>Scan Barcode </Text>
+        <Text style={[styles.buttonText, styles.txt]}>Scan Barcode </Text>
       </TouchableOpacity>
     </View>
   );
