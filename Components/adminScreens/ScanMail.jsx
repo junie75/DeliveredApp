@@ -11,6 +11,8 @@ import {
 } from "react-native";
 // import { BarCodeScanner } from "expo-barcode-scanner";
 import { AutoFocus, Camera } from "expo-camera";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   getAccountByLName,
@@ -27,6 +29,23 @@ function EnterDelivery({ navigation, route }) {
   const currentDate = new Date(); //stamp data of package receival
   const formattedDate = currentDate.toLocaleString();
 
+  console.log(currentDate);
+  console.log(formattedDate);
+
+  // Get the offset in minutes between UTC time and local time
+  // const offsetMinutes = currentDate.getTimezoneOffset();
+
+  // // Adjust the current date and time to reflect the local time zone
+  // const localDate = new Date(currentDate.getTime() - offsetMinutes * 60000);
+  // const formattedDate2 = localDate.toLocaleString();
+
+  // Format the local date as a string for insertion into the database
+  // const formattedDate = localDate.toISOString().slice(0, 19).replace('T', ' ');
+  // console.log(DateReceived);
+
+  // console.log(localDate);
+  // console.log(formattedDate2);
+
   const insertAndNotify = async () => {
     const AccID = searchResult.AccID;
     const MailType = mailType;
@@ -37,11 +56,24 @@ function EnterDelivery({ navigation, route }) {
       .replace("T", " ");
     const TrackingNum = data ? data : "null";
 
+    //set notification alert in secure storage
     try {
+      await AsyncStorage.setItem(`${AccID}`, "true");
+    } catch (e) {
+      // Saving error
+      Alert.alert(
+        `Error alerting ${searchResult.Fname} ${searchResult.Lname}`,
+        e.message
+      );
+    }
+
+    try {
+      //insert into delivery table in database
       await insertDelivery(AccID, MailType, DateReceived, TrackingNum);
+
       Alert.alert(
         "Insertion Successful",
-        `${MailType} has been successfully entered into the database`,
+        `${MailType} has been successfully entered into the database and ${searchResult.Fname} ${searchResult.Lname} has been notified`,
         //array for the buttons displayed on the alert
         [
           {
@@ -66,8 +98,34 @@ function EnterDelivery({ navigation, route }) {
       );
       // navigation.navigate("Admin Home");
     } catch (e) {
-      Alert.alert(`Error inserting ${fname}`, e.message);
+      Alert.alert(`Error inserting`, e.message);
     }
+
+    // Alert.alert(
+    //   "Insertion Successful",
+    //   `${MailType} has been successfully entered into the database and ${searchResult.Fname} ${searchResult.Lname} has been notified`,
+    //   //array for the buttons displayed on the alert
+    //   [
+    //     {
+    //       text: "Home",
+    //       onPress: () => {
+    //         console.log("Home pressed");
+    //         navigation.navigate("Admin Home");
+    //       },
+    //       // style: "cancel",
+    //     },
+    //     {
+    //       text: "Scan More",
+    //       onPress: () => {
+    //         console.log("Scan more pressed");
+    //         // console.log(myDB);
+    //         // console.log(accounts);
+    //         navigation.navigate("Choose Delivery");
+    //       },
+    //       isPreferred: "true",
+    //     },
+    //   ]
+    // );
   };
 
   return (
@@ -90,6 +148,7 @@ function EnterDelivery({ navigation, route }) {
           Recipient: {searchResult.Fname} {searchResult.Lname}
         </Text>
         <Text style={styles.txt}>Mail Type: {mailType}</Text>
+        {/* <Text style={styles.txt}>Date DB: {currentDate}</Text> */}
         <Text style={styles.txt}>Date Received: {formattedDate}</Text>
         <Text style={styles.txt}>Tracking Number: {data ? data : "null"} </Text>
         <Text style={styles.txt}></Text>

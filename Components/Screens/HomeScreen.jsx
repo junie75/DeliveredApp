@@ -20,6 +20,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 //navigation prop used to navigate between pages
 import { getAccounts, insertAccount } from "../../databaseHelper";
 import UserContext from "../../context/UserContext";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = ({ navigation }) => {
   const [newDelivery, setNewDelivery] = useState(true);
@@ -28,11 +30,11 @@ const Home = ({ navigation }) => {
 
   //useEffect checks state of newDelivery and displays the alert
   useEffect(() => {
-    if (newDelivery) {
-      createAlert();
-      setNewDelivery(false);
-    }
-
+    // if (newDelivery) {
+    //   createAlert();
+    //   setNewDelivery(false);
+    // }
+    checkForAlert();
     getAccounts(setAccounts);
   }, []);
 
@@ -52,6 +54,18 @@ const Home = ({ navigation }) => {
       await insertAccount(fname, lname);
     } catch (e) {
       Alert.alert(`Error inserting ${fname}`, e.message);
+    }
+  };
+
+  //check if user's ACCID is set in secure storage with a 1 value signifying a new delivery
+  const checkForAlert = async () => {
+    // const isAlert = await SecureStore.getItemAsync(user.AccID);
+    const isAlert = await AsyncStorage.getItem(`${user.AccID}`);
+
+    if (isAlert && isAlert == "true") {
+      createAlert();
+      //resets the newDelivery alert to false
+      await AsyncStorage.setItem(`${user.AccID}`, "false");
     }
   };
 
@@ -135,7 +149,7 @@ const Home = ({ navigation }) => {
         <NavBtnBox navigation={navigation} />
         {/* <Button title="test" onPress={() => insertData()} />
         <Button title="try" onPress={() => console.log(accounts)} />*/}
-        {showAccounts()}
+        {/* {showAccounts()} */}
       </ScrollView>
     </SafeAreaView>
     // </>

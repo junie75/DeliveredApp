@@ -28,7 +28,9 @@ const DeliveriesScreen = () => {
   // };
 
   const convertDateReceived = (dateReceived) => {
-    const dateObject = new Date(dateReceived); // Convert DateTime string to JavaScript Date object
+    const dateObject = new Date(dateReceived + "Z"); // Convert DateTime string to JavaScript Date object, appends Z to indicate UTC timezone
+
+    // const dateTest = dateObject.toLocaleString();
 
     // Format date
     const dateString = dateObject.toLocaleDateString(); // Get date string in local format
@@ -36,11 +38,17 @@ const DeliveriesScreen = () => {
     // Format time
     const options = { hour: "numeric", minute: "numeric", hour12: true };
     const timeString = dateObject.toLocaleTimeString([], options); // Get time string in local format
+    // console.log(dateReceived);
+    // console.log(dateObject);
+    // console.log(dateTest);
+    // console.log(timeString);
 
     return { dateString, timeString }; // Return object containing formatted date and time strings
   };
 
   const showDeliveries = () => {
+    //put deliveries in order from newest to oldest
+    const reversedDeliveries = [...userDeliveries].reverse();
     // const deliveries = getDeliveries();
     // const deliveries = await getUserDeliveries(user.AccID);
     // console.log(deliveries);
@@ -52,7 +60,7 @@ const DeliveriesScreen = () => {
     //     </View>
     //   );
     // }
-    return userDeliveries.map((delivery, index) => {
+    return reversedDeliveries.map((delivery, index) => {
       const { dateString, timeString } = convertDateReceived(
         delivery.DateReceived
       );
