@@ -29,6 +29,8 @@ import UserContext, { UserProvider } from "./context/UserContext";
 import StorageManagement from "./Components/adminScreens/StorageManagement";
 import ResolveIssues from "./Components/adminScreens/ResolveIssues";
 import ScanMail from "./Components/adminScreens/ScanMail";
+import CheckMailRequest from "./Components/Screens/CheckMailRequest";
+import NewRequestForm from "./Components/Screens/NewRequestForm";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -58,7 +60,7 @@ function DrawerContent({ navigation }) {
       <Button title="Profile" onPress={() => navigation.navigate("Profile")} />
       <Button
         title="Check Mail Request"
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.navigate("Check Mail Request Form")}
       />
       <Button
         style={{ color: "#BBB0C1" }}
@@ -89,6 +91,11 @@ function DrawerScreens() {
         name="Profile"
         component={ProfileScreen}
         options={{ headerShown: true }}
+      />
+      <Drawer.Screen
+        name="Check Mail Request Form"
+        component={CheckMailRequest}
+        options={{ headerShown: true, title: "Check Mail Request" }}
       />
       {/* <Drawer.Screen name="Deliveries" component={DeliveriesScreen} />
       <Drawer.Screen name="Mailroom Map" component={MailMapScreen} />
@@ -146,6 +153,8 @@ export default function App() {
           <Stack.Screen name="Deliveries" component={DeliveriesScreen} />
           <Stack.Screen name="Mailroom Map" component={MailMapScreen} />
           <Stack.Screen name="How-To Page" component={HowToScreen} />
+          <Stack.Screen name="New Request" component={NewRequestForm} />
+
           <Stack.Screen
             name="Admin Home"
             component={AdminHome}

@@ -16,4 +16,7 @@ export const imageLookup = {
   alertRed: require("../assets/alert-red.png"),
   alertOrange: require("../assets/alert-orange.png"),
   alertGreen: require("../assets/alert-green.png"),
+  checkMail: require("../assets/checkMailRequest.png"),
+  newRequest: require("../assets/newRequest.png"),
+  pastRequests: require("../assets/pastRequests.png"),
 };
