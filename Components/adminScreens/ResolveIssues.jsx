@@ -5,18 +5,50 @@ import {
   View,
   ScrollView,
   Image,
+  TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { CheckBox, SearchBar } from "react-native-elements";
 import { imageLookup } from "../imageLookup";
 import { useState } from "react";
+import { getCheckMailRequests } from "../../databaseHelper";
 
 const ResolveIssues = () => {
   let redIcon = "alertRed";
   let orangeIcon = "alertOrange";
   let greenIcon = "alertGreen";
+
+  const [imageName, setImageName] = useState("");
   const [checked, setChecked] = useState(true);
   const toggleCheckbox = () => setChecked(!checked);
+
+  const [helpTickets, setHelpTickets] = useState([]);
+  const currentDate = new Date();
+
+  useEffect(() => {
+    //load all checkMailRequests upon loading
+    getCheckMailRequests(setHelpTickets);
+  }, []);
+
+  //high priority: Urgent & require immediate attention // time > 72 hrs
+  //medium priority: Moderately urgent // 72hrs > time > 48 hrs
+  //low priority: Not urgent // 48 hrs > time > 24hrs
+  const calculatePriority = (ticket) => {
+    //convert expected date into a date object
+    const expectedDate = new Date(ticket.ExpectedDate + "Z");
+
+    //calculate difference between expected date of arrival and current date in milliseconds
+    const timeDifference = currentDate.getTime() - expectedDate.getTime();
+
+    //convert the time difference to days
+    const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+    if (daysDifference >= 3) return redIcon;
+    else if (daysDifference < 3 && daysDifference >= 2) return orangeIcon;
+    else return greenIcon;
+    // console.log("Request ID:" + ticket.RequestID + "Day diff" + daysDifference);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -30,35 +62,75 @@ const ResolveIssues = () => {
             inputStyle={styles.searchBarTxt}
           />
         </View>
+
         <View style={styles.labels}>
           <Text style={[styles.txt, { flex: 2, textAlign: "center" }]}>
             User{" "}
           </Text>
-          <Text style={[styles.txt, { flex: 1 }]}>Date</Text>
+          <Text style={[styles.txt, { flex: 1 }]}>Request Date</Text>
           <Text style={[styles.txt, { flex: 1 }]}>Priority</Text>
         </View>
         <View style={styles.rows}>
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Reagan Bill</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 02/24/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image source={imageLookup[redIcon]} style={styles.alertIcon} />
-              </View>
-            </View>
-          </View>
-          <View style={styles.requestBox}>
+          {helpTickets.map((ticket, index) => {
+            //format Expecteded date
+            const formattedExpectedDate = new Date(
+              ticket.ExpectedDate + "Z"
+            ).toLocaleDateString();
+
+            //format date of request
+            const formattedDateOfRequest = new Date(
+              ticket.DateOfRequest + "Z"
+            ).toLocaleDateString();
+
+            //calculate priority
+            // const priority = calculatePriority(ticket);
+            // console.log(
+            //   "Request ID:" + ticket.RequestID + " Priority:" + priority
+            // );
+
+            // switch (priority) {
+            //   case "High":
+            //     setImageName(redIcon);
+            //   case "Medium":
+            //     setImageName(orangeIcon);
+            //   case "Low":
+            //     setImageName(greenIcon);
+            //   default:
+            //     setImageName(null);
+            // }
+            // console.log("\n\n\n\n\n");
+            // console.log("hi");
+
+            return (
+              <TouchableOpacity style={styles.requestBox} key={index}>
+                <CheckBox
+                  checked={false}
+                  onPress={toggleCheckbox}
+                  iconType="material-community"
+                  checkedIcon="checkbox-marked"
+                  uncheckedIcon={"checkbox-blank-outline"}
+                />
+                <View style={styles.content}>
+                  <View style={styles.contentItem}>
+                    <Text style={styles.txt}>
+                      {ticket.Fname} {ticket.Lname}
+                    </Text>
+                  </View>
+                  <View style={styles.contentItem}>
+                    <Text style={styles.txt}>{formattedDateOfRequest}</Text>
+                  </View>
+                  <View style={styles.contentItem}>
+                    <Image
+                      source={imageLookup[calculatePriority(ticket)]}
+                      style={styles.alertIcon}
+                    />
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+
+          {/* <View style={styles.requestBox}>
             <CheckBox
               checked={false}
               onPress={toggleCheckbox}
@@ -222,7 +294,7 @@ const ResolveIssues = () => {
                 />
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </SafeAreaView>

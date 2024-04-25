@@ -56,7 +56,8 @@ const NewRequestForm = ({ navigation }) => {
         "Your Check Mail Request has been successfully submitted."
       );
       //send user to "view recent check mail requests screen"
-      navigation.navigate("Past Requests");
+      // navigation.navigate("Past Requests");
+      navigation.replace("Past Requests");
     } catch (e) {
       Alert.alert(`Error inserting`, e.message);
     }

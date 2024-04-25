@@ -517,3 +517,31 @@ export const insertCheckMailRequest = (
     );
   });
 };
+
+export const getUserCheckRequestsByID = (AccID, successCallback) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM CheckMailRequests WHERE AccID = ?",
+      [AccID],
+      (txObj, resultSet) => successCallback(resultSet.rows._array),
+      (txObj, error) => console.log(error)
+    );
+  });
+};
+
+export const getCheckMailRequests = (successCallback) => {
+  db.transaction((tx) => {
+    //null is the parameters, this is parameterized query to prevent injection attack
+    tx.executeSql(
+      "SELECT CheckMailRequests.RequestID, CheckMailRequests.MailType, CheckMailRequests.DateOfRequest, CheckMailRequests.ExpectedDate, CheckMailRequests.Status, CheckMailRequests.Decision, CheckMailRequests.ExtraInfo, CheckMailRequests.AccID, Accounts.Fname, Accounts.Lname FROM CheckMailRequests JOIN Accounts ON CheckMailRequests.AccID = Accounts.AccID",
+      null,
+      //success callback function
+      (txObj, resultSet) => {
+        // console.log(resultSet.rows._array);
+        successCallback(resultSet.rows._array);
+      }, //setting the results as our accounts array
+      //error callback function
+      (txObj, error) => console.log(error) //logs if there are errors executing SQL
+    );
+  });
+};
