@@ -35,6 +35,34 @@ export const createTables = () => {
         console.log("Create Deliveries table error", error);
       }
     );
+
+    tx.executeSql(
+      //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
+      "CREATE TABLE IF NOT EXISTS CheckMailRequests" +
+        "(RequestID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, DateOfRequest DateTime, ExpectedDate DateTime, MailType TEXT, Status TEXT, Decision TEXT, ExtraInfo TEXT, Priority TEXT)",
+      [],
+      (result) => {
+        console.log("CheckMailRequests Table created successfully");
+        // tx.executeSql(
+        //   "ALTER TABLE CheckMailRequests ADD COLUMN MailType TEXT",
+        //   [],
+        //   (result) => {
+        //     console.log(
+        //       "New column 'MailType' added to CheckMailRequests table successfully"
+        //     );
+        //   },
+        //   (error) => {
+        //     console.log(
+        //       "Error adding new column to CheckMailRequests table",
+        //       error
+        //     );
+        //   }
+        // );
+      },
+      (error) => {
+        console.log("Create CheckMailRequests table error", error);
+      }
+    );
   });
 };
 
@@ -448,5 +476,44 @@ export const deletePackage = async (id) => {
         }
       );
     });
+  });
+};
+
+export const insertCheckMailRequest = (
+  AccID,
+  MailType,
+  DateOfRequest,
+  ExpectedDate,
+  Status,
+  Decision,
+  ExtraInfo
+) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          "INSERT INTO CheckMailRequests (AccID, MailType, DateOfRequest, ExpectedDate, Status, Decision, ExtraInfo) values ( ?, ?, ?, ?, ?, ?, ?)",
+          [
+            AccID,
+            MailType,
+            DateOfRequest,
+            ExpectedDate,
+            Status,
+            Decision,
+            ExtraInfo,
+          ],
+          (_, resultSet) => {
+            console.log("CheckMailRequest successfully inserted");
+            console.log(resultSet);
+            resolve(resultSet);
+          },
+          (_, error) => {
+            reject(error);
+          }
+        );
+      }
+      // resolve,
+      // reject
+    );
   });
 };

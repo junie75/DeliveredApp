@@ -1,28 +1,78 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Alert,
+} from "react-native";
 import React, { useContext, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import UserContext from "../../context/UserContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
+import { insertCheckMailRequest } from "../../databaseHelper";
 
 const NewRequestForm = ({ navigation }) => {
   const { user } = useContext(UserContext);
   const currentDate = new Date();
   const [request, setRequest] = useState({
     AccID: user.AccID,
-    Fname: user.Fname,
-    Lname: user.Lname,
-    MailType: null,
+    // Fname: user.Fname,
+    // Lname: user.Lname,
+    MailType: "Package",
     DateOfRequest: currentDate,
-    ExpectedDate: null,
+    ExpectedDate: new Date(),
     Status: "Unopened",
     Decision: null,
     ExtraInfo: "",
   });
+
+  const insertRequest = async () => {
+    //format date of request and expected date
+    const formattedDateOfRequest = request.DateOfRequest.toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
+    const formattedExpectedDate = request.ExpectedDate.toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
+    //insert into check mail request database
+    try {
+      await insertCheckMailRequest(
+        request.AccID,
+        request.MailType,
+        formattedDateOfRequest,
+        formattedExpectedDate,
+        request.Status,
+        request.Decision,
+        request.ExtraInfo
+      );
+      //confirmation to the user
+      Alert.alert(
+        "Request Submitted",
+        "Your Check Mail Request has been successfully submitted."
+      );
+      //send user to "view recent check mail requests screen"
+      navigation.navigate("Past Requests");
+    } catch (e) {
+      Alert.alert(`Error inserting`, e.message);
+    }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    if (selectedDate !== undefined) {
+      setRequest({ ...request, ExpectedDate: selectedDate });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView style={styles.fieldsContainer}>
         <View style={styles.fieldsBox}>
-          <Text style={styles.fieldName}>First Name</Text>
+          {/* <Text style={styles.fieldName}>First Name</Text>
           <TextInput
             style={styles.input}
             value={request.Fname}
@@ -35,28 +85,50 @@ const NewRequestForm = ({ navigation }) => {
             value={request.Lname}
             editable={false}
             // onChangeText={(value) => setRequest({ ...request, Lname: value })}
-          />
+          /> */}
           <Text style={styles.fieldName}>
             Are you expecting a package or a letter?
           </Text>
-          <TextInput style={styles.input} value={request.MailType} />
-          <Text style={styles.fieldName}>Today's Date</Text>
+          <Picker
+            selectedValue={request.MailType}
+            onValueChange={(selectedValue) =>
+              setRequest({ ...request, MailType: selectedValue })
+            }
+          >
+            <Picker.Item label="Package" value="Package" />
+            <Picker.Item label="Letter" value="Letter" />
+          </Picker>
+          {/* <TextInput style={styles.input} value={request.MailType} /> */}
+          {/* <Text style={styles.fieldName}>Today's Date</Text>
           <TextInput
             style={styles.input}
             value={currentDate.toLocaleDateString()}
             editable={false}
-          />
+          /> */}
           <Text style={styles.fieldName}>Expected Date of Arrival</Text>
           <DateTimePicker
+            style={{
+              width: 100,
+              alignSelf: "flex-start",
+              marginBottom: 10,
+              borderColor: "#007AFF",
+              borderWidth: 1,
+              borderRadius: 10,
+              // backgroundColor: "lightblue",
+            }}
             mode="date"
-            value={new Date()}
-            display="spinner"
-            onChange={(value) =>
-              setRequest({ ...request, ExpectedDate: value })
+            value={request.ExpectedDate}
+            // display="spinner"
+            minimumDate={new Date(2024, 0, 1)}
+            // maximumDate={new Date()}
+            onChange={
+              handleDateChange
+              // (value) =>
+              // setRequest({ ...request, ExpectedDate: value })
             }
           />
           <Text style={styles.fieldName}>
-            Relevant information {"(Tracking number, etc.)"}
+            Relevant information {"(Tracking number, Sender, etc.)"}
           </Text>
           <TextInput
             style={[styles.input, { height: 150 }]}
@@ -66,6 +138,17 @@ const NewRequestForm = ({ navigation }) => {
               setRequest({ ...request, ExtraInfo: value })
             }
           />
+        </View>
+        <View style={{ alignItems: "flex-end", merginHorizontal: 10 }}>
+          <TouchableOpacity
+            style={styles.submit}
+            onPress={() => {
+              console.log(request);
+              insertRequest();
+            }}
+          >
+            <Text style={styles.submitTxt}>Submit</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -84,15 +167,24 @@ const styles = StyleSheet.create({
   },
   fieldsBox: {
     marginVertical: 10,
+    marginTop: 20,
   },
   fieldName: {
     fontWeight: "300",
-    marginBottom: 5,
+    marginVertical: 10,
   },
   input: {
     backgroundColor: "rgba(0,0,0,0.06)",
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
+  },
+  submit: {
+    backgroundColor: "blue",
+    padding: 15,
+    borderRadius: 10,
+  },
+  submitTxt: {
+    color: "#Fff",
   },
 });

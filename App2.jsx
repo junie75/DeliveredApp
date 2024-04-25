@@ -31,6 +31,7 @@ import ResolveIssues from "./Components/adminScreens/ResolveIssues";
 import ScanMail from "./Components/adminScreens/ScanMail";
 import CheckMailRequest from "./Components/Screens/CheckMailRequest";
 import NewRequestForm from "./Components/Screens/NewRequestForm";
+import PastRequests from "./Components/Screens/PastRequests";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -154,6 +155,7 @@ export default function App() {
           <Stack.Screen name="Mailroom Map" component={MailMapScreen} />
           <Stack.Screen name="How-To Page" component={HowToScreen} />
           <Stack.Screen name="New Request" component={NewRequestForm} />
+          <Stack.Screen name="Past Requests" component={PastRequests} />
 
           <Stack.Screen
             name="Admin Home"

@@ -59,7 +59,7 @@ const CheckMailRequest = ({ navigation }) => {
           />
           <NavBtn
             navigation={navigation}
-            navigateString={""}
+            navigateString={"Past Requests"}
             imageName={"pastRequests"}
             text={"View recent requests"}
           />
