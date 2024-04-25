@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   },
   txt: {
     // fontSize: 10,
-    fontFamily: "FragmentMono-Regular",
+    // fontFamily: "FragmentMono-Regular",
     // color: "blue",
   },
   nameSearch: {

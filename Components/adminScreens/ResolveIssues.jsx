@@ -12,8 +12,9 @@ import { CheckBox, SearchBar } from "react-native-elements";
 import { imageLookup } from "../imageLookup";
 import { useState } from "react";
 import { getCheckMailRequests } from "../../databaseHelper";
+import { useFocusEffect } from "@react-navigation/native";
 
-const ResolveIssues = () => {
+const ResolveIssues = ({ navigation }) => {
   let redIcon = "alertRed";
   let orangeIcon = "alertOrange";
   let greenIcon = "alertGreen";
@@ -23,12 +24,41 @@ const ResolveIssues = () => {
   const toggleCheckbox = () => setChecked(!checked);
 
   const [helpTickets, setHelpTickets] = useState([]);
+  const [updatedHelpTickets, setUpdatedHelpTickets] = useState([]);
   const currentDate = new Date();
 
-  useEffect(() => {
-    //load all checkMailRequests upon loading
-    getCheckMailRequests(setHelpTickets);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      // This function will be called every time the screen comes into focus
+      // You can put any logic here that you want to execute when the screen comes into focus
+      // console.log('First Component is focused'); // For testing purposes
+      getCheckMailRequests((tickets) => {
+        // Calculate priority for each ticket
+        const updatedTickets = tickets.map(calculatePriority);
+        setHelpTickets(updatedTickets);
+      });
+      // You can trigger a re-fetch of data or update state here if needed
+
+      // Returning a cleanup function is optional
+      // return () => {
+      //   // Cleanup logic, if any
+      // };
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   getCheckMailRequests((tickets) => {
+  //     // Calculate priority for each ticket
+  //     const updatedTickets = tickets.map(calculatePriority);
+  //     setHelpTickets(updatedTickets);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   helpTickets.map((ticket) => {
+  //     calculatePriority(ticket);
+  //   });
+  // }, [helpTickets]);
 
   //high priority: Urgent & require immediate attention // time > 72 hrs
   //medium priority: Moderately urgent // 72hrs > time > 48 hrs
@@ -41,11 +71,45 @@ const ResolveIssues = () => {
     const timeDifference = currentDate.getTime() - expectedDate.getTime();
 
     //convert the time difference to days
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
+    const daysDifference = (timeDifference / (1000 * 3600 * 24)).toFixed(2);
 
-    if (daysDifference >= 3) return redIcon;
-    else if (daysDifference < 3 && daysDifference >= 2) return orangeIcon;
-    else return greenIcon;
+    let imageName = "";
+    let priority = "";
+
+    if (daysDifference >= 3) {
+      priority = "High";
+      imageName = redIcon;
+    } else if (daysDifference < 3 && daysDifference >= 2) {
+      priority = "Medium";
+      imageName = orangeIcon;
+    } else {
+      priority = "Low";
+      imageName = greenIcon;
+    }
+
+    const newTicket = {
+      ...ticket,
+      daysDifference: daysDifference,
+      imageName: imageName,
+      priority: priority,
+    };
+
+    // console.log(newTicket);
+    // setUpdatedHelpTickets(...updatedHelpTickets, newTicket);
+    // Update the separate state for updated tickets
+    // setUpdatedHelpTickets((prevTickets) => {
+    //   return [...prevTickets, newTicket];
+    // });
+
+    return newTicket;
+    // setHelpTickets((prevTickets) => {
+    //   return prevTickets.map((prevTicket) => {
+    //     if (prevTicket === ticket) {
+    //       return newTicket;
+    //     }
+    //     return prevTicket;
+    //   });
+    // });
     // console.log("Request ID:" + ticket.RequestID + "Day diff" + daysDifference);
   };
 
@@ -63,12 +127,12 @@ const ResolveIssues = () => {
           />
         </View>
 
-        <View style={styles.labels}>
-          <Text style={[styles.txt, { flex: 2, textAlign: "center" }]}>
-            User{" "}
-          </Text>
-          <Text style={[styles.txt, { flex: 1 }]}>Request Date</Text>
-          <Text style={[styles.txt, { flex: 1 }]}>Priority</Text>
+        <View style={styles.labelHolder}>
+          <Text style={[styles.txt, styles.label]}>User</Text>
+          <Text style={[styles.txt, styles.label]}>Type</Text>
+          <Text style={[styles.txt, styles.label]}>Date</Text>
+          <Text style={[styles.txt, styles.label]}>Priority</Text>
+          <Text style={[styles.txt, styles.label]}>Status</Text>
         </View>
         <View style={styles.rows}>
           {helpTickets.map((ticket, index) => {
@@ -82,48 +146,44 @@ const ResolveIssues = () => {
               ticket.DateOfRequest + "Z"
             ).toLocaleDateString();
 
-            //calculate priority
-            // const priority = calculatePriority(ticket);
-            // console.log(
-            //   "Request ID:" + ticket.RequestID + " Priority:" + priority
-            // );
-
-            // switch (priority) {
-            //   case "High":
-            //     setImageName(redIcon);
-            //   case "Medium":
-            //     setImageName(orangeIcon);
-            //   case "Low":
-            //     setImageName(greenIcon);
-            //   default:
-            //     setImageName(null);
-            // }
-            // console.log("\n\n\n\n\n");
-            // console.log("hi");
+            // calculatePriority(ticket);
+            console.log(ticket);
 
             return (
-              <TouchableOpacity style={styles.requestBox} key={index}>
-                <CheckBox
+              <TouchableOpacity
+                style={styles.requestBox}
+                key={index}
+                onPress={() => {
+                  navigation.navigate("Request Details", { ticket });
+                }}
+              >
+                {/* <CheckBox
                   checked={false}
                   onPress={toggleCheckbox}
                   iconType="material-community"
                   checkedIcon="checkbox-marked"
                   uncheckedIcon={"checkbox-blank-outline"}
-                />
+                /> */}
                 <View style={styles.content}>
                   <View style={styles.contentItem}>
-                    <Text style={styles.txt}>
+                    <Text style={[styles.txt, { fontSize: 9 }]}>
                       {ticket.Fname} {ticket.Lname}
                     </Text>
+                  </View>
+                  <View style={styles.contentItem}>
+                    <Text style={styles.txt}>{ticket.MailType}</Text>
                   </View>
                   <View style={styles.contentItem}>
                     <Text style={styles.txt}>{formattedDateOfRequest}</Text>
                   </View>
                   <View style={styles.contentItem}>
                     <Image
-                      source={imageLookup[calculatePriority(ticket)]}
+                      source={imageLookup[ticket.imageName]}
                       style={styles.alertIcon}
                     />
+                  </View>
+                  <View style={styles.contentItem}>
+                    <Text style={styles.txt}>{ticket.Status}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -325,21 +385,26 @@ const styles = StyleSheet.create({
     // textAlign: "center",
   },
   rows: {
-    marginHorizontal: 15,
+    // marginHorizontal: 10,
   },
-  labels: {
-    alignSelf: "flex-end",
+  labelHolder: {
+    // marginHorizontal: 10,
+    // alignSelf: "flex-end",
     flexDirection: "row",
     // borderBlockColor: "yellow",
     // borderWidth: 1,
     // width: "82%",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     borderBottomColor: "lightgray",
     borderBottomWidth: 1,
   },
+  label: {
+    flex: 1,
+    textAlign: "center",
+  },
   txt: {
     fontSize: 10,
-    fontFamily: "FragmentMono-Regular",
+    // fontFamily: "FragmentMono-Regular",
   },
   requestBox: {
     flexDirection: "row",
@@ -354,10 +419,14 @@ const styles = StyleSheet.create({
     // borderBlockColor: "yellow",
     // borderWidth: 1,
     alignItems: "center",
-    justifyContent: "space-between",
+    // textAlign: "center",
+
+    // justifyContent: "space-between",
   },
   contentItem: {
     flex: 1,
+    alignItems: "center",
+    paddingVertical: 30,
     // borderColor: "yellow",
     // borderWidth: 1,
   },

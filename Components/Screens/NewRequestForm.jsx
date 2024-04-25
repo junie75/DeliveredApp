@@ -140,7 +140,7 @@ const NewRequestForm = ({ navigation }) => {
             }
           />
         </View>
-        <View style={{ alignItems: "flex-end", merginHorizontal: 10 }}>
+        <View style={{ alignItems: "flex-end", marginHorizontal: 10 }}>
           <TouchableOpacity
             style={styles.submit}
             onPress={() => {

@@ -184,16 +184,20 @@ const StorageManagement = () => {
               <View key={index} style={styles.storageBox}>
                 <View style={styles.headers}>
                   <Text style={styles.hdrTxt}>
-                    Package ID: {exp.storedPckg.DeliveryID}
+                    <Text style={{ fontWeight: "300" }}>Package ID:</Text>{" "}
+                    {exp.storedPckg.DeliveryID}
                   </Text>
                   <Text style={styles.hdrTxt}>
-                    Owner: {exp.storedPckg.Fname} {exp.storedPckg.Lname}
+                    <Text style={{ fontWeight: "300" }}>Owner:</Text>{" "}
+                    {exp.storedPckg.Fname} {exp.storedPckg.Lname}
                   </Text>
                   <Text style={styles.hdrTxt}>
-                    Received: {exp.receivalDate}
+                    <Text style={{ fontWeight: "300" }}>Received:</Text>{" "}
+                    {exp.receivalDate}
                   </Text>
                   <Text style={[styles.hdrTxt, styles.hdrTxtRed]}>
-                    Dispose: {exp.disposalDate}
+                    <Text style={{ fontWeight: "300" }}>Dispose:</Text>{" "}
+                    {exp.disposalDate}
                   </Text>
                 </View>
                 <View style={styles.btnHolder}>
@@ -306,8 +310,9 @@ const styles = StyleSheet.create({
   hdrTxt: {
     // textAlign: "center",
     // marginLeft: 10,
-    fontSize: 12,
-    fontFamily: "FragmentMono-Regular",
+    fontSize: 13,
+    paddingVertical: 2,
+    // fontFamily: "FragmentMono-Regular",
   },
   hdrTxtRed: {
     color: "red",
@@ -333,13 +338,14 @@ const styles = StyleSheet.create({
     // color: "#fff",
   },
   btnTxt: {
+    textAlign: "center",
     fontSize: 10,
-    fontFamily: "FragmentMono-Regular",
+    // fontFamily: "FragmentMono-Regular",
   },
   btnTxtRed: {
     color: "#fff",
   },
   txt: {
-    fontFamily: "FragmentMono-Regular",
+    // fontFamily: "FragmentMono-Regular",
   },
 });

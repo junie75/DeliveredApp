@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/UserContext";
 import { getUserCheckRequestsByID } from "../../databaseHelper";
@@ -15,7 +21,7 @@ const PastRequests = () => {
   return (
     <View style={styles.container}>
       {/* <Text>PastRequests</Text> */}
-      <View>
+      <ScrollView>
         {userRequests.reverse().map((request, index) => {
           //convert dates to proper format
           const formattedExpectedDate = new Date(
@@ -62,7 +68,7 @@ const PastRequests = () => {
             </View>
           );
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 };

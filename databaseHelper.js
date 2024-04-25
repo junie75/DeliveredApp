@@ -533,7 +533,7 @@ export const getCheckMailRequests = (successCallback) => {
   db.transaction((tx) => {
     //null is the parameters, this is parameterized query to prevent injection attack
     tx.executeSql(
-      "SELECT CheckMailRequests.RequestID, CheckMailRequests.MailType, CheckMailRequests.DateOfRequest, CheckMailRequests.ExpectedDate, CheckMailRequests.Status, CheckMailRequests.Decision, CheckMailRequests.ExtraInfo, CheckMailRequests.AccID, Accounts.Fname, Accounts.Lname FROM CheckMailRequests JOIN Accounts ON CheckMailRequests.AccID = Accounts.AccID",
+      "SELECT CheckMailRequests.RequestID, CheckMailRequests.MailType, CheckMailRequests.DateOfRequest, CheckMailRequests.ExpectedDate, CheckMailRequests.Status, CheckMailRequests.Decision, CheckMailRequests.ExtraInfo, CheckMailRequests.AccID, Accounts.Fname, Accounts.Lname FROM CheckMailRequests JOIN Accounts ON CheckMailRequests.AccID = Accounts.AccID WHERE CheckMailRequests.Status != 'Complete'",
       null,
       //success callback function
       (txObj, resultSet) => {
@@ -542,6 +542,29 @@ export const getCheckMailRequests = (successCallback) => {
       }, //setting the results as our accounts array
       //error callback function
       (txObj, error) => console.log(error) //logs if there are errors executing SQL
+    );
+  });
+};
+
+export const updateCheckMailRequest = async (Status, Decision, RequestID) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `UPDATE CheckMailRequests SET Status = ?, Decision = ? WHERE RequestID=?`,
+          [Status, Decision, RequestID],
+          (_, result) => {
+            console.log("Check Mail Request updated successfully");
+            resolve(result);
+          },
+          (_, error) => {
+            console.error("Error updating Check Mail Requests:", error);
+            reject(error);
+          }
+        );
+      }
+      // reject,
+      // resolve
     );
   });
 };

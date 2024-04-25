@@ -32,6 +32,7 @@ import ScanMail from "./Components/adminScreens/ScanMail";
 import CheckMailRequest from "./Components/Screens/CheckMailRequest";
 import NewRequestForm from "./Components/Screens/NewRequestForm";
 import PastRequests from "./Components/Screens/PastRequests";
+import RequestDetails from "./Components/adminScreens/RequestDetails";
 
 // import SQLite from "react-native-sqlite-storage";
 // import { FileSystem } from "expo-file-system";
@@ -170,12 +171,17 @@ export default function App() {
           <Stack.Screen
             name="Resolve Issues"
             component={ResolveIssues}
-            options={{ title: "Check Mail Requests" }}
+            options={{ title: "Check Mail Requests", headerBackTitle: "Back" }}
           />
           <Stack.Screen
             name="Scan Mail"
             component={ScanMail}
             options={{ title: "Mail Management" }}
+          />
+          <Stack.Screen
+            name="Request Details"
+            component={RequestDetails}
+            options={{ headerBackTitle: "Back" }}
           />
         </Stack.Navigator>
       </UserProvider>

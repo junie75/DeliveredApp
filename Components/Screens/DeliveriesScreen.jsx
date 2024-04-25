@@ -12,7 +12,7 @@ import { getUserDeliveries, getUserDeliveriesByID } from "../../databaseHelper";
 
 import UserContext from "../../context/UserContext";
 
-const DeliveriesScreen = () => {
+const DeliveriesScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
   const [userDeliveries, setUserDeliveries] = useState([]);
   const [userHasDel, setUserHasDel] = useState(false);
@@ -148,7 +148,11 @@ const DeliveriesScreen = () => {
 
           <View style={styles.footer}>
             <Text style={styles.expecting}>Expecting a delivery?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Check Mail Request Form");
+              }}
+            >
               <Text style={styles.submit}>Submit a Check Mail Request</Text>
             </TouchableOpacity>
           </View>

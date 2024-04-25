@@ -78,12 +78,12 @@ const AdminHome = ({ navigation }) => {
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Resolve Issues</Text>
             </View>
-            <View style={styles.btn}>
+            {/* <View style={styles.btn}>
               <TouchableOpacity style={styles.btnbackground}>
                 <Image source={imageLookup[imageName4]} style={styles.icon} />
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Database Management</Text>
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.footer}>
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   btnTxt: {
     textAlign: "center",
     width: 120,
-    fontFamily: "FragmentMono-Regular",
+    // fontFamily: "FragmentMono-Regular",
   },
 
   footer: {
