@@ -1,3 +1,8 @@
+// Purpose: This file contains the form for the user to submit a new check mail request.
+//The user can select whether they are expecting a package or a letter, the expected date of arrival,
+//and any relevant information.
+//The user can submit the form, which will insert the request into the database and
+//send the user to the "view recent check mail requests screen".
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,12 +20,13 @@ import { Picker } from "@react-native-picker/picker";
 import { insertCheckMailRequest } from "../../databaseHelper";
 
 const NewRequestForm = ({ navigation }) => {
+  //get the user from the context
   const { user } = useContext(UserContext);
+  //get the current date
   const currentDate = new Date();
+  //state to hold the request data
   const [request, setRequest] = useState({
     AccID: user.AccID,
-    // Fname: user.Fname,
-    // Lname: user.Lname,
     MailType: "Package",
     DateOfRequest: currentDate,
     ExpectedDate: new Date(),
@@ -29,6 +35,7 @@ const NewRequestForm = ({ navigation }) => {
     ExtraInfo: "",
   });
 
+  //insert the request into the database
   const insertRequest = async () => {
     //format date of request and expected date
     const formattedDateOfRequest = request.DateOfRequest.toISOString()
@@ -63,6 +70,7 @@ const NewRequestForm = ({ navigation }) => {
     }
   };
 
+  //handle the change in the date picker
   const handleDateChange = (event, selectedDate) => {
     if (selectedDate !== undefined) {
       setRequest({ ...request, ExpectedDate: selectedDate });
@@ -73,20 +81,6 @@ const NewRequestForm = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView style={styles.fieldsContainer}>
         <View style={styles.fieldsBox}>
-          {/* <Text style={styles.fieldName}>First Name</Text>
-          <TextInput
-            style={styles.input}
-            value={request.Fname}
-            editable={false}
-            // onChangeText={(value) => setRequest({ ...request, Fname: value })}
-          />
-          <Text style={styles.fieldName}>Last Name</Text>
-          <TextInput
-            style={styles.input}
-            value={request.Lname}
-            editable={false}
-            // onChangeText={(value) => setRequest({ ...request, Lname: value })}
-          /> */}
           <Text style={styles.fieldName}>
             Are you expecting a package or a letter?
           </Text>
@@ -99,13 +93,6 @@ const NewRequestForm = ({ navigation }) => {
             <Picker.Item label="Package" value="Package" />
             <Picker.Item label="Letter" value="Letter" />
           </Picker>
-          {/* <TextInput style={styles.input} value={request.MailType} /> */}
-          {/* <Text style={styles.fieldName}>Today's Date</Text>
-          <TextInput
-            style={styles.input}
-            value={currentDate.toLocaleDateString()}
-            editable={false}
-          /> */}
           <Text style={styles.fieldName}>Expected Date of Arrival</Text>
           <DateTimePicker
             style={{
@@ -115,18 +102,12 @@ const NewRequestForm = ({ navigation }) => {
               borderColor: "#007AFF",
               borderWidth: 1,
               borderRadius: 10,
-              // backgroundColor: "lightblue",
             }}
             mode="date"
             value={request.ExpectedDate}
-            // display="spinner"
             minimumDate={new Date(2024, 0, 1)}
-            // maximumDate={new Date()}
-            onChange={
-              handleDateChange
-              // (value) =>
-              // setRequest({ ...request, ExpectedDate: value })
-            }
+            maximumDate={currentDate}
+            onChange={handleDateChange}
           />
           <Text style={styles.fieldName}>
             Relevant information {"(Tracking number, Sender, etc.)"}

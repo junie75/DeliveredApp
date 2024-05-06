@@ -1,3 +1,4 @@
+//holds the signup box component that contains the input fields and login button
 import {
   StyleSheet,
   Text,
@@ -11,8 +12,11 @@ import { insertAccount } from "../../../databaseHelper";
 import Inputs from "./Inputs";
 import UserContext from "../../../context/UserContext";
 
+//receives an array of strings to be used as labels for the input boxes
 const SignUpBox = ({ arr, navigation, btnTxt }) => {
+  //holds the input labels
   const inputs = arr;
+  //receive the function to update the user in the context
   const { updateUser } = useContext(UserContext);
 
   //hold the user inputted data
@@ -23,14 +27,15 @@ const SignUpBox = ({ arr, navigation, btnTxt }) => {
     password: "",
   });
 
+  // Update the userData state with the new value for the specified key
   const handleChangeText = (key, value) => {
-    // Update the userData state with the new value for the specified key
     setUserData({
       ...userData,
       [key]: value,
     });
   };
 
+  //handle signup button press
   const insertData = async (
     fname = userData.name,
     lname = userData.lname,
@@ -38,37 +43,18 @@ const SignUpBox = ({ arr, navigation, btnTxt }) => {
     password = userData.password
   ) => {
     try {
+      //insert the user into the database
       await insertAccount(fname, lname, email, password);
       console.log("Account inserted successfuly");
-      // updateUser(insertedUser);
+      //navigate to the login screen
       navigation.navigate("Login");
     } catch (e) {
       Alert.alert(`Error inserting ${fname}`, e.message);
     }
   };
 
-  //   const insertData = async (userData) => {
-  //     try {
-  //       await insertAccount(
-  //         userData.name,
-  //         userData.lname,
-  //         userData.email,
-  //         userData.password
-  //       );
-  //       navigation.navigate("Home");
-  //     } catch (e) {
-  //       Alert.alert(`Error inserting ${fname}`, e.message);
-  //     }
-  //   };
-
   return (
     <View style={styles.signupBox}>
-      {/* {inputs.map((boxLabel, index) => (
-        <View key={index} style={styles.inputBoxes}>
-          <Text style={styles.inputLabel}>{boxLabel}</Text>
-          <TextInput style={styles.inputBox} />
-        </View>
-      ))} */}
       <View style={styles.inputBoxes}>
         <Text style={styles.inputLabel}>First Name</Text>
         <TextInput
@@ -102,15 +88,6 @@ const SignUpBox = ({ arr, navigation, btnTxt }) => {
           onChangeText={(value) => handleChangeText("password", value)}
         />
       </View>
-      {/* <Inputs boxLabel="Email" />
-      <Inputs boxLabel="Password" /> */}
-      {/* <LoginBtn
-        btnTxt={btnTxt}
-        navigation={navigation}
-        navigateString={"Home"}
-      /> */}
-
-      {/*login button */}
       <TouchableOpacity style={styles.signupBtn} onPress={() => insertData()}>
         <Text style={styles.signupBtnTxt}>{btnTxt}</Text>
       </TouchableOpacity>
@@ -122,9 +99,6 @@ export default SignUpBox;
 
 const styles = StyleSheet.create({
   signupBox: {
-    // flex: 0.1,
-    // flexShrink: 0,
-    // marginTop: "50%",
     justifyContent: "center",
     marginHorizontal: 20,
   },
@@ -134,7 +108,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#007AFF",
     alignSelf: "center",
-    // textAlign: "center",
     width: "100%",
     borderRadius: 30,
   },
@@ -151,19 +124,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingBottom: 5,
     marginLeft: 10,
-    // color: "lightgray",
   },
   inputBox: {
-    // borderColor: "lightgray",
     borderRadius: 10,
     borderWidth: 1,
-    // backgroundColor: "#fff",
     height: 60,
     paddingLeft: 5,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-    // // shadowRadius: 4, // Shadow radius (adjust as needed)
-    // elevation: 5, //android specific, no effect on ios
   },
 });

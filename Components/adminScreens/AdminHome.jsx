@@ -1,3 +1,4 @@
+//this is the admin home screen
 import {
   SafeAreaView,
   ScrollView,
@@ -27,6 +28,7 @@ const AdminHome = ({ navigation }) => {
     "FragmentMono-Italic": require("../../assets/fonts/FragmentMono-Italic.ttf"),
   });
 
+  //get the update user function from the context
   const { updateUser } = useContext(UserContext);
 
   //check if fonts have loaded
@@ -40,12 +42,14 @@ const AdminHome = ({ navigation }) => {
     return null;
   }
 
+  //render the screen
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Header navigation={navigation} showMenu={false} />
         <View style={styles.body}>
           <Text style={styles.portalTxt}>Admin Portal</Text>
+          {/*navigation buttons*/}
           <View style={styles.btnContainer}>
             <View style={styles.btn}>
               <TouchableOpacity
@@ -78,20 +82,13 @@ const AdminHome = ({ navigation }) => {
               </TouchableOpacity>
               <Text style={styles.btnTxt}>Resolve Issues</Text>
             </View>
-            {/* <View style={styles.btn}>
-              <TouchableOpacity style={styles.btnbackground}>
-                <Image source={imageLookup[imageName4]} style={styles.icon} />
-              </TouchableOpacity>
-              <Text style={styles.btnTxt}>Database Management</Text>
-            </View> */}
           </View>
         </View>
         <View style={styles.footer}>
           <TouchableOpacity
             style={styles.logout}
             onPress={() => {
-              // Implement your logout logic here
-              // For example, clearing user session or token
+              // remove the saved user to logout and navigate to the login screen
               updateUser(null);
               navigation.navigate("Login");
             }}
@@ -106,21 +103,17 @@ const AdminHome = ({ navigation }) => {
 
 export default AdminHome;
 
+//style the page
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     flexDirection: "column",
     justifyContent: "space-between",
-    // borderColor: "red",
-    // borderWidth: 1,
   },
 
   body: {
     flex: 1,
-    // borderColor: "green",
-    // borderWidth: 1,
-    // marginBottom: 80,
   },
 
   portalTxt: {
@@ -137,40 +130,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
-    // alignContent: "stretch",
-    // borderColor: "yellow",
-    // borderWidth: 1,
-    // height: 500,
-    // width: 300,
     marginHorizontal: 20,
-    // marginVertical: 0,
     height: 500,
     columnGap: 20,
   },
 
   btn: {
-    // flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // borderColor: "blue",
-    // borderWidth: 1,
     marginHorizontal: 10,
     marginVertical: 20,
-    // margin: 30,
     padding: 10,
   },
 
   btnbackground: {
-    // backgroundColor: "#007AFF",
     backgroundColor: "#fff",
-    // borderRadius: 8, // Border radius for rounded corners (adjust as needed)
-    // shadowColor: "#000",
-    // // shadowColor: "#007AFF",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-    // // shadowRadius: 4, // Shadow radius (adjust as needed)
-    // elevation: 5, //android specific, no effect on ios
     borderRadius: 10,
     width: 100,
     height: 100,
@@ -182,24 +157,14 @@ const styles = StyleSheet.create({
   icon: {
     width: 80,
     height: 80,
-    // shadowColor: "#000",
-    // // shadowColor: "#007AFF",
-    // shadowOffset: { width: 0, height: 0 },
-    // shadowOpacity: 0.1,
   },
 
   btnTxt: {
     textAlign: "center",
     width: 120,
-    // fontFamily: "FragmentMono-Regular",
   },
 
-  footer: {
-    // borderColor: "blue",
-    // borderWidth: 1,
-    // height: 50,
-    // alignItems: "center",
-  },
+  footer: {},
 
   logout: {
     backgroundColor: "#007AFF",
@@ -207,11 +172,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
     padding: 10,
     marginBottom: 80,
-    // shadowColor: "#000",
-    // // shadowColor: "#007AFF",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-    // shadowRadius: 4, // Shadow radius (adjust as needed)
   },
 
   logoutTxt: {

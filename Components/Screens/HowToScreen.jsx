@@ -1,8 +1,9 @@
-import React from "react";
+// This file is a screen that displays information on how to use the mailroom services.
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Hero from "./homeComp/Hero";
 
 const HowToScreen = () => {
+  //image name for the hero
   imageName = "howToImage";
   return (
     <View style={styles.container}>
@@ -17,7 +18,6 @@ const HowToScreen = () => {
           </Text>
         </View>
 
-        {/* <View style={{ flexDirection: "row", justifyContent: "space-between" }}> */}
         <View style={styles.textContainers}>
           <Text style={styles.textHeader}>Hours</Text>
           <Text>
@@ -36,7 +36,6 @@ const HowToScreen = () => {
             1st floor of Treadaway Hall.
           </Text>
         </View>
-        {/* </View> */}
         <View style={styles.textContainers}>
           <Text style={styles.textHeader}>Dorm Addressing</Text>
           <Text style={{ fontStyle: "italic" }}>

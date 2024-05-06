@@ -1,3 +1,6 @@
+//this is the screen that shows the details of a request ticket and
+//allows the admin to update the status and decision of the request
+
 import {
   Alert,
   ScrollView,
@@ -27,6 +30,7 @@ const RequestDetails = ({ navigation, route }) => {
     updateRequest.DateOfRequest
   ).toLocaleDateString();
 
+  //update the request in the database
   const updateHelpTicketInDB = async () => {
     try {
       const result = await updateCheckMailRequest(

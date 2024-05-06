@@ -1,3 +1,5 @@
+//this page is for the admin to view and resolve issues
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +17,7 @@ import { getCheckMailRequests } from "../../databaseHelper";
 import { useFocusEffect } from "@react-navigation/native";
 
 const ResolveIssues = ({ navigation }) => {
+  //icon images for priority
   let redIcon = "alertRed";
   let orangeIcon = "alertOrange";
   let greenIcon = "alertGreen";
@@ -32,33 +35,14 @@ const ResolveIssues = ({ navigation }) => {
       // This function will be called every time the screen comes into focus
       // You can put any logic here that you want to execute when the screen comes into focus
       // console.log('First Component is focused'); // For testing purposes
+
       getCheckMailRequests((tickets) => {
         // Calculate priority for each ticket
         const updatedTickets = tickets.map(calculatePriority);
         setHelpTickets(updatedTickets);
       });
-      // You can trigger a re-fetch of data or update state here if needed
-
-      // Returning a cleanup function is optional
-      // return () => {
-      //   // Cleanup logic, if any
-      // };
     }, [])
   );
-
-  // useEffect(() => {
-  //   getCheckMailRequests((tickets) => {
-  //     // Calculate priority for each ticket
-  //     const updatedTickets = tickets.map(calculatePriority);
-  //     setHelpTickets(updatedTickets);
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   helpTickets.map((ticket) => {
-  //     calculatePriority(ticket);
-  //   });
-  // }, [helpTickets]);
 
   //high priority: Urgent & require immediate attention // time > 72 hrs
   //medium priority: Moderately urgent // 72hrs > time > 48 hrs
@@ -94,37 +78,21 @@ const ResolveIssues = ({ navigation }) => {
       priority: priority,
     };
 
-    // console.log(newTicket);
-    // setUpdatedHelpTickets(...updatedHelpTickets, newTicket);
-    // Update the separate state for updated tickets
-    // setUpdatedHelpTickets((prevTickets) => {
-    //   return [...prevTickets, newTicket];
-    // });
-
     return newTicket;
-    // setHelpTickets((prevTickets) => {
-    //   return prevTickets.map((prevTicket) => {
-    //     if (prevTicket === ticket) {
-    //       return newTicket;
-    //     }
-    //     return prevTicket;
-    //   });
-    // });
-    // console.log("Request ID:" + ticket.RequestID + "Day diff" + daysDifference);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View>
-          <SearchBar
+        <View style={{ marginVertical: 10 }}>
+          {/* <SearchBar
             placeholder="Search"
             lightTheme
             round
             containerStyle={styles.searchContainer}
             inputContainerStyle={styles.searchBar}
             inputStyle={styles.searchBarTxt}
-          />
+          /> */}
         </View>
 
         <View style={styles.labelHolder}>
@@ -134,6 +102,7 @@ const ResolveIssues = ({ navigation }) => {
           <Text style={[styles.txt, styles.label]}>Priority</Text>
           <Text style={[styles.txt, styles.label]}>Status</Text>
         </View>
+        {/*Display each help ticket */}
         <View style={styles.rows}>
           {helpTickets.map((ticket, index) => {
             //format Expecteded date
@@ -157,13 +126,6 @@ const ResolveIssues = ({ navigation }) => {
                   navigation.navigate("Request Details", { ticket });
                 }}
               >
-                {/* <CheckBox
-                  checked={false}
-                  onPress={toggleCheckbox}
-                  iconType="material-community"
-                  checkedIcon="checkbox-marked"
-                  uncheckedIcon={"checkbox-blank-outline"}
-                /> */}
                 <View style={styles.content}>
                   <View style={styles.contentItem}>
                     <Text style={[styles.txt, { fontSize: 9 }]}>
@@ -189,172 +151,6 @@ const ResolveIssues = ({ navigation }) => {
               </TouchableOpacity>
             );
           })}
-
-          {/* <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Brock Olsen</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/12/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[orangeIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Josh Boston</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/20/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[orangeIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Riley Stewart</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/26/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[orangeIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Adam Norse</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/30/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[greenIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Terry Crews</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/30/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[greenIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Brett Foster</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 03/31/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[greenIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.requestBox}>
-            <CheckBox
-              checked={false}
-              onPress={toggleCheckbox}
-              iconType="material-community"
-              checkedIcon="checkbox-marked"
-              uncheckedIcon={"checkbox-blank-outline"}
-            />
-            <View style={styles.content}>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}>Tina Morris</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Text style={styles.txt}> 04/01/24</Text>
-              </View>
-              <View style={styles.contentItem}>
-                <Image
-                  source={imageLookup[greenIcon]}
-                  style={styles.alertIcon}
-                />
-              </View>
-            </View>
-          </View> */}
         </View>
       </ScrollView>
     </SafeAreaView>

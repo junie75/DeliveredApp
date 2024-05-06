@@ -1,3 +1,4 @@
+//holds the login box component that contains the input fields and login button
 import {
   StyleSheet,
   Text,
@@ -12,34 +13,43 @@ import LoginBtn from "./LoginBtn";
 import { authenticateUser, deleteAccount } from "../../../databaseHelper";
 import UserContext from "../../../context/UserContext";
 
+//receives an array of strings to be used as labels for the input boxes
 const LoginBox = ({ arr, navigation, btnTxt }) => {
+  //holds the input labelss
   const inputs = arr;
+
   //receive the function to update the user in the context
   const { updateUser } = useContext(UserContext);
+
   //hold the user inputted data
   const [userData, setUserData] = useState({
     email: "",
     password: "",
   });
 
+  // Update the userData state with the new value for the specified key
   const handleChangeText = (key, value) => {
-    // Update the userData state with the new value for the specified key
     setUserData({
       ...userData,
       [key]: value,
     });
   };
 
+  //handle login button press
   const handleLogin = async () => {
     try {
+      //authenticate the user in the database
       const user = await authenticateUser(userData.email, userData.password);
+
+      //if a user is found
       if (user) {
         //if user is found, update the user in the context with the user object
         updateUser(user);
+
         // Successful login, navigate to the next screen or perform other actions
         console.log("Login successful:", user);
 
-        // navigation.navigate("DrawerScreens");
+        // navigate to the appropriate screen based on the user's role
         user.isAdmin == 1
           ? navigation.navigate("Admin Home")
           : navigation.navigate("DrawerScreens");
@@ -59,6 +69,7 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
     }
   };
 
+  //function used to test deletion of accounts
   const handleDelete = async (id) => {
     try {
       await deleteAccount(id);
@@ -71,16 +82,6 @@ const LoginBox = ({ arr, navigation, btnTxt }) => {
 
   return (
     <View style={styles.loginBox}>
-      {/* {inputs.map((boxLabel, index) => (
-        <Inputs key={index} boxLabel={boxLabel} />
-      ))} */}
-      {/* <Inputs boxLabel="Email" />
-      <Inputs boxLabel="Password" /> */}
-      {/* <LoginBtn
-        btnTxt={btnTxt}
-        navigation={navigation}
-        navigateString={"Home"}
-      /> */}
       <View style={styles.inputBoxes}>
         <Text style={styles.inputLabel}>Email</Text>
         <TextInput
@@ -122,9 +123,6 @@ export default LoginBox;
 
 const styles = StyleSheet.create({
   loginBox: {
-    // flex: 0.1,
-    // flexShrink: 0,
-    // marginTop: "50%",
     justifyContent: "center",
     marginHorizontal: 20,
   },
@@ -134,7 +132,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#007AFF",
     alignSelf: "center",
-    // textAlign: "center",
     width: "100%",
     borderRadius: 30,
   },
@@ -151,19 +148,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingBottom: 5,
     marginLeft: 10,
-    // color: "lightgray",
   },
   inputBox: {
-    // borderColor: "lightgray",
     borderRadius: 10,
     borderWidth: 1,
-    // backgroundColor: "#fff",
     height: 60,
     paddingLeft: 5,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-    // // shadowRadius: 4, // Shadow radius (adjust as needed)
-    // elevation: 5, //android specific, no effect on ios
   },
 });

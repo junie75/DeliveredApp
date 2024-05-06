@@ -1,3 +1,5 @@
+//screen to calculate and notify the admin of packages that are approaching their disposal date
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -37,10 +39,9 @@ const StorageManagement = () => {
 
   //function to find all the packages approaching their disposal date
   const findExceedingStorage = () => {
-    // console.log(storedPackages);
-
     // packageArray stores packages expiring soon;
     const packageArray = [];
+
     //stamp the current date
     const currentDate = new Date();
 
@@ -70,16 +71,13 @@ const StorageManagement = () => {
           disposalDate: disposalDate.toLocaleDateString(), //stamp date package will be disposed
         });
       }
-      // console.log(storedPackage.DateReceived);
-      // console.log(dateReceived);
-      // console.log(expiryDate);
-      // console.log(packageArray);
 
       //set expiringpackages to array of package objects that are expiring soon
       setExpiringPackages(packageArray);
     });
   };
 
+  //notify the user that their package is about to be disposed
   const notifyUser = async (accID, packageID, fname, lname) => {
     //send alert to the user
     try {
@@ -93,13 +91,16 @@ const StorageManagement = () => {
     setNotifiedPackages([...notifiedPackages, packageID]);
   };
 
+  //handle the disposal of a package
   const handleDispose = async (id) => {
     try {
+      //delete the package from the databases
       await deletePackage(id);
       Alert.alert(
         "Success",
         "Package successfully deleted from database, handle package disposal accordingly."
       );
+
       //remove package from array of expiring packages
       setExpiringPackages(
         expiringPackages.filter(
@@ -111,63 +112,7 @@ const StorageManagement = () => {
     }
   };
 
-  // const showExceedingStorage = () => {
-  //   // findExceedingStorage();
-
-  //   return expiringPackages.map((exp, index) => {
-  //     <View key={index} style={styles.storageBox}>
-  //       <View style={styles.headers}>
-  //         <Text style={styles.hdrTxt}>
-  //           Package ID: {exp.storedPckg.DeliveryID}
-  //         </Text>
-  //         <Text style={styles.hdrTxt}>Received: 03/31/2024</Text>
-  //         <Text style={[styles.hdrTxt, styles.hdrTxtRed]}>
-  //           Dispose: 04/13/2024
-  //         </Text>
-  //       </View>
-  //       <View style={styles.btnHolder}>
-  //         <TouchableOpacity style={styles.btn}>
-  //           <Text style={styles.btnTxt}>Resolve</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity style={styles.btn}>
-  //           <Text style={styles.btnTxt}>Notify</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity style={[styles.btn, styles.btnRed]}>
-  //           <Text style={[styles.btnTxt, styles.btnTxtRed]}>Dispose</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     </View>;
-  //   });
-
-  // let notifications = [];
-  // for (let i = 0; i < 5; i++) {
-  //   notifications.push(
-  //     <View key={i} style={styles.storageBox}>
-  //       <View style={styles.headers}>
-  //         <Text style={styles.hdrTxt}>Package ID: 8117654</Text>
-  //         <Text style={styles.hdrTxt}>Received: 03/31/2024</Text>
-  //         <Text style={[styles.hdrTxt, styles.hdrTxtRed]}>
-  //           Dispose: 04/13/2024
-  //         </Text>
-  //       </View>
-  //       <View style={styles.btnHolder}>
-  //         <TouchableOpacity style={styles.btn}>
-  //           <Text style={styles.btnTxt}>Resolve</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity style={styles.btn}>
-  //           <Text style={styles.btnTxt}>Notify</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity style={[styles.btn, styles.btnRed]}>
-  //           <Text style={[styles.btnTxt, styles.btnTxtRed]}>Dispose</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     </View>
-  //   );
-  // }
-
-  // return notifications;
-  // };
-
+  //render the page
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -201,7 +146,8 @@ const StorageManagement = () => {
                   </Text>
                 </View>
                 <View style={styles.btnHolder}>
-                  {/* <TouchableOpacity
+                  {/* FOR TESTING
+                  <TouchableOpacity
                     style={styles.btn}
                     // onPress={() => {
                     //   updateAllDeliveriesIsPickedUpToZero();
@@ -231,10 +177,6 @@ const StorageManagement = () => {
                         [
                           {
                             text: "Cancel",
-                            // onPress: () => {
-                            //   // console.log("cancel pressed");
-                            //   // navigation.navigate("Admin Home");
-                            // },
                             style: "cancel",
                           },
                           {
@@ -242,9 +184,6 @@ const StorageManagement = () => {
                             onPress: () => {
                               handleDispose(exp.storedPckg.DeliveryID);
                               console.log("Dispose pressed");
-                              // console.log(myDB);
-                              // console.log(accounts);
-                              // navigation.navigate("Choose Delivery");
                             },
                             style: "destructive",
                             isPreferred: "true",
@@ -296,23 +235,16 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     flexDirection: "row",
     justifyContent: "space-around",
-    // marginBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "lightgray",
   },
   headers: {
     flex: 2,
-    // paddingLeft: 10,
     justifyContent: "space-around",
-    // borderColor: "yellow",
-    // borderWidth: 1,
   },
   hdrTxt: {
-    // textAlign: "center",
-    // marginLeft: 10,
     fontSize: 13,
     paddingVertical: 2,
-    // fontFamily: "FragmentMono-Regular",
   },
   hdrTxtRed: {
     color: "red",
@@ -323,9 +255,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "center",
     gap: 5,
-    // columnGap: 5,
-    // borderColor: "blue",
-    // borderWidth: 1,
   },
   btn: {
     borderRadius: 5,
@@ -335,17 +264,12 @@ const styles = StyleSheet.create({
   },
   btnRed: {
     backgroundColor: "red",
-    // color: "#fff",
   },
   btnTxt: {
     textAlign: "center",
     fontSize: 10,
-    // fontFamily: "FragmentMono-Regular",
   },
   btnTxtRed: {
     color: "#fff",
-  },
-  txt: {
-    // fontFamily: "FragmentMono-Regular",
   },
 });

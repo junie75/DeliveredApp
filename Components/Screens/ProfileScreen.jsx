@@ -1,3 +1,4 @@
+//this is the profile screen where the user can view and edit their profile information
 import React, { useContext, useState } from "react";
 import {
   View,
@@ -18,11 +19,16 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { updateAccount } from "../../databaseHelper";
 
 const ProfileScreen = ({ navigation }) => {
+  // Get user information from the context and the function to update the user
   const { user, updateUser } = useContext(UserContext);
+  //set the hero image to the profileHero image
   const imageName = "profileHero";
+
+  // State to manage edit mode and edited user information
   const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState({ ...user });
 
+  // Function to handle edit mode
   const handleEdit = () => {
     setEditMode(!editMode);
     if (!editMode) {
@@ -31,6 +37,7 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
+  // Function to handle when the save button is pressed
   const handleSave = async (
     newFname = editedUser.Fname,
     newLname = editedUser.Lname,
@@ -41,8 +48,8 @@ const ProfileScreen = ({ navigation }) => {
     AccID = editedUser.AccID
   ) => {
     try {
+      //send the user info to the database and receive result
       const result = await updateAccount(
-        //send the user info to the database and receive result
         newFname,
         newLname,
         newAddress,
@@ -58,59 +65,39 @@ const ProfileScreen = ({ navigation }) => {
       // Handle errors if any
       console.error("Error updating user:", error);
     }
-    // Save edited user information
   };
-
-  //   const keys = Object.keys(user);
-  //   const filteredKeys = keys.slice(1, keys.length - 1);
-  //   const KeyValuePairs = () => {
-  //     return (
-  //       <View>
-  //         {filteredKeys.map((key, index) => (
-  //           <View key={index} style={styles.container}>
-  //             <Text style={styles.label}>{key}</Text>
-  //             <Text style={styles.result}>{user[key]}</Text>
-  //             {/* <TextInput
-  //               style={styles.input}
-  //               value={obj[key]}
-  //               onChangeText={(value) => console.log(value)} // Change this function as needed
-  //             /> */}
-  //           </View>
-  //         ))}
-  //       </View>
-  //     );
-  //   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        {/* <Header showMenu={true} navigation={navigation} /> */}
-        {/* <Text>Profile Screen</Text> */}
         <Hero imageName={imageName} />
-        {editMode ? (
-          <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={() => handleEdit()}>
-              <Text style={styles.cancel}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSave()}>
-              <Text style={styles.save}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.btnContainer}>
-            <TouchableOpacity onPress={() => handleEdit()}>
-              {/* <Button
+        {
+          //display the edit and save buttons if in edit mode and only the edit button if not
+          editMode ? (
+            <View style={styles.btnContainer}>
+              <TouchableOpacity onPress={() => handleEdit()}>
+                <Text style={styles.cancel}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleSave()}>
+                <Text style={styles.save}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.btnContainer}>
+              <TouchableOpacity onPress={() => handleEdit()}>
+                {/* <Button
             title="Edit"
             // style={styles.edit}
             onPress={() => handleEdit()}
           /> */}
-              <Image
-                source={require("../../assets/editing.png")}
-                style={{ height: 25, width: 25 }}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
+                <Image
+                  source={require("../../assets/editing.png")}
+                  style={{ height: 25, width: 25 }}
+                />
+              </TouchableOpacity>
+            </View>
+          )
+        }
         <KeyboardAwareScrollView style={styles.fieldsContainer}>
           <View style={styles.fieldsBox}>
             <Text style={styles.fieldName}>First Name</Text>

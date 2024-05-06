@@ -1,3 +1,4 @@
+//this function can be called to get the image path of the image you want to use
 export const imageLookup = {
   signInHero: require("../assets/signInHero.png"),
   homeHero: require("../assets/homeHero.png"),

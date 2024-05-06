@@ -1,3 +1,6 @@
+//the screen that displays the user's deliveries.
+//It fetches the user's deliveries from the database and displays them in a list.
+//It also contains a button that allows the user to submit a check mail request if they are expecting a delivery.
 import React, { useContext, useState, useEffect } from "react";
 import {
   SafeAreaView,
@@ -8,7 +11,7 @@ import {
   View,
 } from "react-native";
 
-import { getUserDeliveries, getUserDeliveriesByID } from "../../databaseHelper";
+import { getUserDeliveriesByID } from "../../databaseHelper";
 
 import UserContext from "../../context/UserContext";
 
@@ -17,20 +20,15 @@ const DeliveriesScreen = ({ navigation }) => {
   const [userDeliveries, setUserDeliveries] = useState([]);
   const [userHasDel, setUserHasDel] = useState(false);
 
+  //get the user's deliveries from the database
   useEffect(() => {
     getUserDeliveriesByID(user.AccID, setUserDeliveries);
   }, []);
 
-  // const getDeliveries = async () => {
-  //   console.log("test");
-  //   const deliveries = await getUserDeliveries(user.AccID);
-  //   return deliveries;
-  // };
-
+  //converts the date received string to a date object and formats it to a string
   const convertDateReceived = (dateReceived) => {
-    const dateObject = new Date(dateReceived + "Z"); // Convert DateTime string to JavaScript Date object, appends Z to indicate UTC timezone
-
-    // const dateTest = dateObject.toLocaleString();
+    // Convert DateTime string to JavaScript Date object, appends Z to indicate UTC timezone
+    const dateObject = new Date(dateReceived + "Z");
 
     // Format date
     const dateString = dateObject.toLocaleDateString(); // Get date string in local format
@@ -38,33 +36,24 @@ const DeliveriesScreen = ({ navigation }) => {
     // Format time
     const options = { hour: "numeric", minute: "numeric", hour12: true };
     const timeString = dateObject.toLocaleTimeString([], options); // Get time string in local format
-    // console.log(dateReceived);
-    // console.log(dateObject);
-    // console.log(dateTest);
-    // console.log(timeString);
 
-    return { dateString, timeString }; // Return object containing formatted date and time strings
+    // Return object containing formatted date and time strings
+    return { dateString, timeString };
   };
 
+  //displays the user's deliveries in a list
   const showDeliveries = () => {
     //put deliveries in order from newest to oldest
     const reversedDeliveries = [...userDeliveries].reverse();
-    // const deliveries = getDeliveries();
-    // const deliveries = await getUserDeliveries(user.AccID);
-    // console.log(deliveries);
 
-    // if (!Array.isArray(deliveries) || deliveries.length === 0) {
-    //   return (
-    //     <View style={{ justifyContent: "center", alignItems: "center" }}>
-    //       <Text>No deliveries to show</Text>
-    //     </View>
-    //   );
-    // }
+    //for each delivery, create a delivery box and display the delivery
     return reversedDeliveries.map((delivery, index) => {
+      //convert the date received
       const { dateString, timeString } = convertDateReceived(
         delivery.DateReceived
       );
 
+      //render the delivery box
       return (
         <View key={index} style={styles.deliveryBox}>
           <View style={styles.deliveryHeader}>
@@ -82,55 +71,17 @@ const DeliveriesScreen = ({ navigation }) => {
           </Text>
           <Text style={styles.location}>
             Location:{" "}
-            {delivery.MailType === "Package"
-              ? "Treadaway Mailroom"
-              : user.Address}
+            {
+              //if it is a package delivery, display the mailroom location, otherwise display user's dorm
+              delivery.MailType === "Package"
+                ? "Treadaway Mailroom"
+                : user.Address
+            }
           </Text>
         </View>
       );
     });
   };
-
-  // const showDeliveries = async () => {
-  //   try {
-  //     const deliveries = await getUserDeliveries(user.AccID);
-
-  //     if (!Array.isArray(deliveries) || deliveries.length === 0) {
-  //       return (
-  //         <View style={{ justifyContent: "center", alignItems: "center" }}>
-  //           <Text>No deliveries to show</Text>
-  //         </View>
-  //       );
-  //     }
-
-  //     return (
-  //       <View>
-  //         <Text>Test</Text>
-  //         {/* {deliveries.map((delivery, index) => (
-  //           <View key={index} style={styles.deliveryBox}>
-  //             <Text style={styles.headerName}>{delivery.MailType}</Text>
-  //             <Text style={styles.details}>
-  //               Received: {delivery.DateReceived}
-  //             </Text>
-  //             <Text style={styles.details}>
-  //               Tracking Number: {delivery.TrackingNum || "N/A"}
-  //             </Text>
-  //             <Text style={styles.details}>Location: {delivery.Location}</Text>
-  //           </View>
-  //         ))} */}
-  //       </View>
-  //     );
-  //   } catch (error) {
-  //     console.error("Error fetching deliveries:", error);
-  //     return (
-  //       <View style={{ justifyContent: "center", alignItems: "center" }}>
-  //         <Text>Error fetching deliveries</Text>
-  //       </View>
-  //     );
-  //   }
-  // };
-
-  // return deliveries;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -169,10 +120,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    // backgroundColor: "#fff",
-    // borderWidth: 10,
-    // borderColor: "blue",
-    // alignItems: "center",
   },
 
   boxContainer: {
@@ -180,15 +127,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     marginBottom: 80,
-    // justifyContent: "center",
   },
 
   deliveryBox: {
     flexDirection: "column",
-    // borderWidth: 1,
-    // borderColor: "black",
     height: 120,
-    // marginBottom: 15,
     justifyContent: "space-evenly",
     borderBottomColor: "#BBB0C1",
     borderBottomWidth: 1,
@@ -197,28 +140,19 @@ const styles = StyleSheet.create({
   },
 
   deliveryHeader: {
-    // borderWidth: 1,
-    // borderColor: "black",
     flexDirection: "row",
     justifyContent: "space-between",
-    // justifyContent: "center",
   },
 
   headerName: {
-    // borderWidth: 1,
-    // borderColor: "black",
     alignSelf: "flex-start",
     fontWeight: "bold",
   },
 
   headerDetails: {
-    // borderWidth: 1,
-    // borderColor: "black",
     flexDirection: "row",
     width: 190,
-    // alignSelf: "center",
     justifyContent: "space-around",
-    // alignItems: "stretch",
   },
 
   footer: {

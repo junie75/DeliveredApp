@@ -1,8 +1,10 @@
+//container for the nav buttons on the home screen
 import React from "react";
 import { TouchableOpacity, View, Image, Text, StyleSheet } from "react-native";
 import NavBtn from "./NavBtn";
 
 const NavBtnBox = ({ navigation }) => {
+  //icon images
   imageName1 = "pckgIcon";
   imageName2 = "globeIcon";
   imageName3 = "aboutIcon";
@@ -38,8 +40,6 @@ const NavBtnBox = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   navButtonBox: {
-    // borderColor: "black",
-    // borderWidth: 1,
     height: 300,
   },
 });

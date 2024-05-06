@@ -1,6 +1,9 @@
+// creates a button component for login and signup screens
+
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
+//given button text, navigation, and string to navigate to
 const LoginBtn = ({ btnTxt, navigation, navigateString }) => {
   return (
     <TouchableOpacity
@@ -21,7 +24,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#007AFF",
     alignSelf: "center",
-    // textAlign: "center",
     width: "100%",
     borderRadius: 30,
   },

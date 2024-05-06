@@ -1,3 +1,5 @@
+//this screen is where the admin can scan in new mail deliveries or packages and handle package pickups
+//because the scan mail functionalites are so in depth, it utilizes its own stack navigator to navigate between the different screens
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -22,33 +24,24 @@ import {
   updatePackageIsPickedUp,
 } from "../../databaseHelper";
 
+//create its own stack navigator to navigate between the different screens
 const ScanStack = createNativeStackNavigator();
 
+//function to enter the delivery into the database and notify the recipient
 function EnterDelivery({ navigation, route }) {
   const { data, mailType, searchResult } = route.params;
   const currentDate = new Date(); //stamp data of package receival
   const formattedDate = currentDate.toLocaleString();
 
+  //for testing purposes
   console.log(currentDate);
   console.log(formattedDate);
 
-  // Get the offset in minutes between UTC time and local time
-  // const offsetMinutes = currentDate.getTimezoneOffset();
-
-  // // Adjust the current date and time to reflect the local time zone
-  // const localDate = new Date(currentDate.getTime() - offsetMinutes * 60000);
-  // const formattedDate2 = localDate.toLocaleString();
-
-  // Format the local date as a string for insertion into the database
-  // const formattedDate = localDate.toISOString().slice(0, 19).replace('T', ' ');
-  // console.log(DateReceived);
-
-  // console.log(localDate);
-  // console.log(formattedDate2);
-
+  //insert the delivery into the database and notify the recipient
   const insertAndNotify = async () => {
     const AccID = searchResult.AccID;
     const MailType = mailType;
+
     // Format date as "YYYY-MM-DD HH:MM:SS"
     const DateReceived = currentDate
       .toISOString()
@@ -71,6 +64,7 @@ function EnterDelivery({ navigation, route }) {
       //insert into delivery table in database
       await insertDelivery(AccID, MailType, DateReceived, TrackingNum);
 
+      //alert the admin that the delivery has been entered into the database and the recipient has been notified
       Alert.alert(
         "Insertion Successful",
         `${MailType} has been successfully entered into the database and ${searchResult.Fname} ${searchResult.Lname} has been notified`,
@@ -100,34 +94,9 @@ function EnterDelivery({ navigation, route }) {
     } catch (e) {
       Alert.alert(`Error inserting`, e.message);
     }
-
-    // Alert.alert(
-    //   "Insertion Successful",
-    //   `${MailType} has been successfully entered into the database and ${searchResult.Fname} ${searchResult.Lname} has been notified`,
-    //   //array for the buttons displayed on the alert
-    //   [
-    //     {
-    //       text: "Home",
-    //       onPress: () => {
-    //         console.log("Home pressed");
-    //         navigation.navigate("Admin Home");
-    //       },
-    //       // style: "cancel",
-    //     },
-    //     {
-    //       text: "Scan More",
-    //       onPress: () => {
-    //         console.log("Scan more pressed");
-    //         // console.log(myDB);
-    //         // console.log(accounts);
-    //         navigation.navigate("Choose Delivery");
-    //       },
-    //       isPreferred: "true",
-    //     },
-    //   ]
-    // );
   };
 
+  //render the confirmation page
   return (
     <View style={styles.container}>
       <Text style={[styles.txt, { marginTop: 10 }]}>Confirm Details?</Text>
@@ -148,7 +117,6 @@ function EnterDelivery({ navigation, route }) {
           Recipient: {searchResult.Fname} {searchResult.Lname}
         </Text>
         <Text style={styles.txt}>Mail Type: {mailType}</Text>
-        {/* <Text style={styles.txt}>Date DB: {currentDate}</Text> */}
         <Text style={styles.txt}>Date Received: {formattedDate}</Text>
         <Text style={styles.txt}>Tracking Number: {data ? data : "null"} </Text>
         <Text style={styles.txt}></Text>
@@ -157,7 +125,6 @@ function EnterDelivery({ navigation, route }) {
         onPress={() => {
           insertAndNotify();
         }}
-        // style={{ alignSelf: "flex-end" }}
       >
         <Text style={[styles.txt, { color: "blue" }]}>Confirm</Text>
       </TouchableOpacity>
@@ -167,7 +134,9 @@ function EnterDelivery({ navigation, route }) {
 
 //Find the recipient of the package
 function FindUser({ navigation, route }) {
+  //get the tracking number from the previous page or empty object if it is a letter
   const { data } = route.params || {};
+
   const [nameSearch, setNameSearch] = useState("");
   const [searchPressed, setSearchPressed] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
@@ -186,7 +155,7 @@ function FindUser({ navigation, route }) {
       });
   };
 
-  //return
+  //display search results and navigate to enter delivery page with the package information
   const showResults = () => {
     return searchResults.map((searchResult, index) => {
       return (
@@ -204,13 +173,13 @@ function FindUser({ navigation, route }) {
           <Text style={styles.txt}>
             {searchResult.Fname} {searchResult.Lname}
           </Text>
-          {/* <Text style={styles.txt}>{searchResults.Email}</Text> */}
           <Text style={styles.txt}>{searchResult.Address}</Text>
         </TouchableOpacity>
       );
     });
   };
 
+  //render the page
   return (
     <View style={styles.container}>
       <View style={styles.containerCard}>
@@ -240,15 +209,19 @@ function FindUser({ navigation, route }) {
           <Text style={[styles.txt, { color: "blue" }]}>Search</Text>
         </TouchableOpacity>
       </View>
-      {searchPressed && (
-        <ScrollView style={styles.containerCard}>{showResults()}</ScrollView>
-      )}
+      {
+        //display the results once last name is searched for
+        searchPressed && (
+          <ScrollView style={styles.containerCard}>{showResults()}</ScrollView>
+        )
+      }
     </View>
   );
 }
 
 //page to determine if entering new package or new letter
 function ChooseDelivery({ navigation }) {
+  //sent to scanPackage to determine which page to navigate to next
   const next = "findUser";
   return (
     <View style={styles.container}>
@@ -358,6 +331,7 @@ function PackagePickup({ navigation, route }) {
 
 //page to determine if entering new package or new letter
 function ChooseEntry({ navigation }) {
+  //sent to scanPackage to determine which page to navigate to next
   const next = "packagePickup";
   return (
     <View style={styles.container}>
@@ -385,11 +359,13 @@ function ChooseEntry({ navigation }) {
   );
 }
 
+//function to scan the barcode of a package, used for both package pick up and new package entry
 function ScanPackage({ navigation, route }) {
   const { next } = route.params; //next has the next route scanPackage should call
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
+  // ask for device camera permissions upon first render
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -397,10 +373,11 @@ function ScanPackage({ navigation, route }) {
     })();
   }, []);
 
+  //function to handle the barcode scan and navigate to the correct page with the tracking number
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     console.log(data);
+
     //send tracking number to next page based on which function called it
     if (next === "findUser") {
       navigation.navigate("Find User", { data });
@@ -425,10 +402,12 @@ function ScanPackage({ navigation, route }) {
     );
   };
 
+  //return empty page if permissions are not yet determined
   if (hasPermission === null) {
     return <View />;
   }
 
+  //return page with error message if permissions are not granted
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
@@ -437,9 +416,9 @@ function ScanPackage({ navigation, route }) {
     );
   }
 
+  //render barcode scanner
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Welcome to the Barcode Scanner App!</Text> */}
       <Text
         style={[
           styles.paragraph,
@@ -461,6 +440,7 @@ function ScanPackage({ navigation, route }) {
   );
 }
 
+//navigation tool for scan mail
 const ScanMail = ({ navigation }) => {
   return (
     <ScanStack.Navigator>
@@ -513,22 +493,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   containerCard: {
-    // backgroundColor: "lightblue",
     margin: 20,
     marginTop: 30,
-    // justifyContent: "flex-start",
-    // alignItems: "flex-start",
-    // borderRadius: 10,
-    // height: "70%",
     width: "90%",
   },
   btnContainer: {
     marginTop: 50,
-    //alignItems: "center",
     justifyContent: "space-around",
-    // flex: 1,
-    // borderWidth: 2,
-    // borderColor: "yellow",
     height: 200,
   },
   btn: {
@@ -562,11 +533,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  txt: {
-    // fontSize: 10,
-    // fontFamily: "FragmentMono-Regular",
-    // color: "blue",
-  },
+
   nameSearch: {
     borderWidth: 1,
     borderColor: "gray",
@@ -575,7 +542,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   resultsBox: {
-    // flexDirection: "row",
     justifyContent: "space-around",
     padding: 10,
     borderWidth: 2,

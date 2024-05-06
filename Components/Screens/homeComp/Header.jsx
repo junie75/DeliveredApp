@@ -1,3 +1,4 @@
+//component for the header which contains the logo and menu buttons
 import React from "react";
 import {
   TouchableOpacity,
@@ -39,24 +40,17 @@ const Header = ({ navigation, showMenu }) => {
         />
       </TouchableOpacity>
 
-      {/* {logOutBtn ? (
-        <TouchableOpacity style={styles.logOutBtn}>
-          <Text style={styles.logOutBtnTxt}>Logout</Text>
-        </TouchableOpacity>
-      ) : ( */}
+      {/* Extra view used for layout*/}
       <View></View>
-      {/* )} */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    // borderColor: "black",
-    // borderWidth: 1,
+    //edit margins based on ios or android platform
     margin: Platform.OS === "ios" ? 20 : 10,
     marginTop: Platform.OS === "ios" ? 0 : 70,
-    // height: 100,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -66,24 +60,17 @@ const styles = StyleSheet.create({
     height: 50,
   },
   menu: {
-    // alignItems: "flex-start",
-    // left: -40,
     width: 20,
     height: 20,
   },
   logOutBtn: {
-    // backgroundColor: "#007AFF",
     padding: 3,
     borderRadius: 8,
   },
   logOutBtnTxt: {
-    // fontSize: 10,
     color: "#007AFF",
     textDecorationLine: "underline",
   },
-  // menuButton: {
-  //   display: none ,
-  // },
 });
 
 export default Header;

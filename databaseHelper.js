@@ -1,7 +1,10 @@
+// Description: This file contains the functions that interact with the SQLite database.
 import * as SQLite from "expo-sqlite";
 
+// Open the database
 const db = SQLite.openDatabase("database.db");
 
+// Open the database and return it
 export const openDatabase = () => {
   //Open the database if not already opened
   return db;
@@ -10,8 +13,8 @@ export const openDatabase = () => {
 //create the tables in the array if not created already
 export const createTables = () => {
   db.transaction((tx) => {
+    //create accounts table
     tx.executeSql(
-      //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS Accounts" +
         "(AccID INTEGER PRIMARY KEY AUTOINCREMENT, Fname TEXT, Lname TEXT, Password TEXT, Address TEXT, Email TEXT, Phone TEXT, isAdmin INTEGER)",
       [],
@@ -23,6 +26,7 @@ export const createTables = () => {
       }
     );
 
+    //create deliveries table
     tx.executeSql(
       // isPickedUp is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS Deliveries" +
@@ -36,6 +40,7 @@ export const createTables = () => {
       }
     );
 
+    //create check mail requests table
     tx.executeSql(
       //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS CheckMailRequests" +
@@ -43,21 +48,6 @@ export const createTables = () => {
       [],
       (result) => {
         console.log("CheckMailRequests Table created successfully");
-        // tx.executeSql(
-        //   "ALTER TABLE CheckMailRequests ADD COLUMN MailType TEXT",
-        //   [],
-        //   (result) => {
-        //     console.log(
-        //       "New column 'MailType' added to CheckMailRequests table successfully"
-        //     );
-        //   },
-        //   (error) => {
-        //     console.log(
-        //       "Error adding new column to CheckMailRequests table",
-        //       error
-        //     );
-        //   }
-        // );
       },
       (error) => {
         console.log("Create CheckMailRequests table error", error);
@@ -126,74 +116,26 @@ export const getAccounts = (successCallback) => {
   });
 };
 
-//insert a singular account into the database
-// export const insertAccount = (name, lname, email, password) => {
-//   return new Promise((resolve, reject) => {
-//     db.transaction(
-//       (tx) => {
-//         tx.executeSql(
-//           "INSERT INTO Accounts (Fname, Lname, Email, Password) values (?, ?, ?, ?)",
-//           [name, lname, email, password],
-//           (_, result) => {
-//             console.log("Account successfully inserted");
-//             resolve(result);
-//             // Fetch the inserted user
-//             // tx.executeSql(
-//             //   "SELECT * FROM Accounts WHERE AccID = ?",
-//             //   [result.insertId],
-//             //   (_, resultSet) => {
-//             //     const insertedUser = resultSet.rows.item(0);
-//             //     // Resolve with the inserted user and other relevant information
-//             //     resolve(insertedUser);
-//             //   }
-//             // );
-//           },
-//           (_, error) => {
-//             reject(error);
-//           }
-//         );
-//       }
-//       // resolve,
-//       // reject
-//     );
-//   });
-// };
+//insert an account into the database
 export const insertAccount = (name, lname, email, password) => {
   return new Promise((resolve, reject) => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          "INSERT INTO Accounts (Fname, Lname, Email, Password) values (?, ?, ?, ?)",
-          [name, lname, email, password],
-          (_, resultSet) => {
-            console.log("Account successfully inserted");
-            resolve(resultSet);
-          },
-          (_, error) => {
-            reject(error);
-          }
-        );
-      }
-      // resolve,
-      // reject
-    );
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT INTO Accounts (Fname, Lname, Email, Password) values (?, ?, ?, ?)",
+        [name, lname, email, password],
+        (_, resultSet) => {
+          console.log("Account successfully inserted");
+          resolve(resultSet);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
   });
 };
 
-//delete an account CORRECT
-
-// export const deleteAccount = async (id) => {
-//   return new Promise((resolve, reject) => {
-//     db.transaction(
-//       (tx) => {
-//         tx.executeSql("DELETE FROM Accounts WHERE AccID = ?", [id]);
-//       },
-//       reject,
-//       resolve
-//     );
-//   });
-// };
-
+//delete an account from the database
 export const deleteAccount = async (id) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -212,6 +154,7 @@ export const deleteAccount = async (id) => {
   });
 };
 
+//authenticate a user by email and password for login
 export const authenticateUser = (email, password) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -234,6 +177,7 @@ export const authenticateUser = (email, password) => {
   });
 };
 
+//update an account in the database for profile
 export const updateAccount = async (
   newFname,
   newLname,
@@ -244,52 +188,30 @@ export const updateAccount = async (
   AccID
 ) => {
   return new Promise((resolve, reject) => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          `UPDATE Accounts SET Fname=?, Lname=?, Address=?, Phone=?, Email=?, Password=? WHERE AccID=?;`,
-          [
-            newFname,
-            newLname,
-            newAddress,
-            newPhone,
-            newEmail,
-            newPassword,
-            AccID,
-          ],
-          (_, result) => {
-            console.log("Account updated successfully");
-            resolve(result);
-          },
-          (_, error) => {
-            console.error("Error updating account:", error);
-            reject(error);
-          }
-        );
-      }
-      // reject,
-      // resolve
-    );
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE Accounts SET Fname=?, Lname=?, Address=?, Phone=?, Email=?, Password=? WHERE AccID=?;`,
+        [
+          newFname,
+          newLname,
+          newAddress,
+          newPhone,
+          newEmail,
+          newPassword,
+          AccID,
+        ],
+        (_, result) => {
+          console.log("Account updated successfully");
+          resolve(result);
+        },
+        (_, error) => {
+          console.error("Error updating account:", error);
+          reject(error);
+        }
+      );
+    });
   });
 };
-
-// export const deleteAccount = (id) => {
-//     db.transaction((tx) => {
-//       tx.executeSql(
-//         "DELETE FROM Accounts WHERE AccID = ?",
-//         [id],
-//         (txObj, resultSet) => {
-//           //check if there are any rows affected before updating names array
-//           if (resultSet.rowsAffected > 0) {
-//             let existingNames = [...names].filter((name) => name.id !== id); //filter out name to delete
-//             setNames(existingNames);
-//             // setCurrentName(undefined);
-//           }
-//         },
-//         (txObj, error) => console.log(error)
-//       );
-//     });
-//   };
 
 //search for a user account by last name
 export const getAccountByLName = (Lname) => {
@@ -311,6 +233,7 @@ export const getAccountByLName = (Lname) => {
   });
 };
 
+//insert a delivery into the database
 export const insertDelivery = (AccID, MailType, DateReceived, TrackingNum) => {
   return new Promise((resolve, reject) => {
     db.transaction(
@@ -334,6 +257,7 @@ export const insertDelivery = (AccID, MailType, DateReceived, TrackingNum) => {
   });
 };
 
+//get all of the deliveries that belong to specific user
 export const getUserDeliveriesByID = (AccID, successCallback) => {
   db.transaction((tx) => {
     tx.executeSql(
@@ -345,6 +269,7 @@ export const getUserDeliveriesByID = (AccID, successCallback) => {
   });
 };
 
+//get deliveries that belong to a user(***NOT USED***)
 export const getUserDeliveries = (AccID) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -368,6 +293,7 @@ export const getUserDeliveries = (AccID) => {
   });
 };
 
+//get all of the packages that are still stored in the array
 export const getPackagesStillStored = (successCallback) => {
   db.transaction((tx) => {
     //null is the parameters, this is parameterized query to prevent injection attack
@@ -385,7 +311,7 @@ export const getPackagesStillStored = (successCallback) => {
   });
 };
 
-//fix previous deliveries
+//fix previous deliveries that were not marked as not picked up
 export const updateAllDeliveriesIsPickedUpToZero = () => {
   db.transaction((tx) => {
     tx.executeSql(
@@ -401,24 +327,7 @@ export const updateAllDeliveriesIsPickedUpToZero = () => {
   });
 };
 
-// export const getPackagesByTrackingNum = (trackingNum, successCallback) => {
-//   db.transaction((tx) => {
-//     //null is the parameters, this is parameterized query to prevent injection attack
-//     tx.executeSql(
-//       "SELECT * FROM Deliveries WHERE MailType = 'Package' AND TrackingNum = ? ",
-//       [trackingNum],
-//       //success callback function
-//       (txObj, resultSet) => {
-//         successCallback(resultSet.rows._array);
-//         // console.log("result is" + resultSet.rows._array);
-//       }, //setting the results as our accounts array
-//       //error callback function
-//       (txObj, error) => console.log(error) //logs if there are errors executing SQL
-//     );
-//   });
-// };
-
-//search for a user account by last name
+//search for a package by its tracking number
 export const getPackageByTrackingNum = (trackingNum) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -438,6 +347,7 @@ export const getPackageByTrackingNum = (trackingNum) => {
   });
 };
 
+//update a package to be marked as picked up for package pickup
 export const updatePackageIsPickedUp = async (deliveryID, datePickedUp) => {
   return new Promise((resolve, reject) => {
     db.transaction(
@@ -461,6 +371,7 @@ export const updatePackageIsPickedUp = async (deliveryID, datePickedUp) => {
   });
 };
 
+//delete package from the database when it is disposed of
 export const deletePackage = async (id) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
@@ -479,6 +390,7 @@ export const deletePackage = async (id) => {
   });
 };
 
+//insert a check mail request into the database
 export const insertCheckMailRequest = (
   AccID,
   MailType,
@@ -518,6 +430,7 @@ export const insertCheckMailRequest = (
   });
 };
 
+//get all of the check mail requests that belong to specific user
 export const getUserCheckRequestsByID = (AccID, successCallback) => {
   db.transaction((tx) => {
     tx.executeSql(
@@ -529,6 +442,7 @@ export const getUserCheckRequestsByID = (AccID, successCallback) => {
   });
 };
 
+//get all of the check mail requests that are not complete (***NOT USED***)
 export const getCheckMailRequests = (successCallback) => {
   db.transaction((tx) => {
     //null is the parameters, this is parameterized query to prevent injection attack
@@ -546,25 +460,22 @@ export const getCheckMailRequests = (successCallback) => {
   });
 };
 
+//update a check mail request in the database
 export const updateCheckMailRequest = async (Status, Decision, RequestID) => {
   return new Promise((resolve, reject) => {
-    db.transaction(
-      (tx) => {
-        tx.executeSql(
-          `UPDATE CheckMailRequests SET Status = ?, Decision = ? WHERE RequestID=?`,
-          [Status, Decision, RequestID],
-          (_, result) => {
-            console.log("Check Mail Request updated successfully");
-            resolve(result);
-          },
-          (_, error) => {
-            console.error("Error updating Check Mail Requests:", error);
-            reject(error);
-          }
-        );
-      }
-      // reject,
-      // resolve
-    );
+    db.transaction((tx) => {
+      tx.executeSql(
+        `UPDATE CheckMailRequests SET Status = ?, Decision = ? WHERE RequestID=?`,
+        [Status, Decision, RequestID],
+        (_, result) => {
+          console.log("Check Mail Request updated successfully");
+          resolve(result);
+        },
+        (_, error) => {
+          console.error("Error updating Check Mail Requests:", error);
+          reject(error);
+        }
+      );
+    });
   });
 };

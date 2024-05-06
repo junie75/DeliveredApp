@@ -1,3 +1,4 @@
+//this is the main screen for the Check Mail Request feature
 import {
   SafeAreaView,
   StyleSheet,
@@ -21,7 +22,6 @@ const CheckMailRequest = ({ navigation }) => {
               fontWeight: "bold",
               fontSize: 25,
               textAlign: "center",
-              // color: "navy",
             }}
           >
             Fill out your{"\n"}Check Mail Request
@@ -44,13 +44,6 @@ const CheckMailRequest = ({ navigation }) => {
           </Text>
         </View>
         <View style={styles.btnHolder}>
-          {/* <TouchableOpacity>
-            <Text>Create Check Mail Request</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <Text>View recent requests</Text>
-          </TouchableOpacity> */}
           <NavBtn
             navigation={navigation}
             navigateString={"New Request"}

@@ -1,3 +1,6 @@
+// This file contains the screen that is displayed when the user wants to sign up in app.
+// It contains the signup box component that contains the input fields and create account button.
+//majority of functionality is in signupbox component
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,7 +21,6 @@ const SignUp = ({ navigation }) => {
       <KeyboardAwareScrollView>
         <View style={styles.container} behavior="position">
           <Header showMenu={false} />
-          {/* <Text style={styles.headerText}>Create Account</Text> */}
           <Hero imageName={imageName} />
           <SignUpBox
             arr={[
@@ -52,11 +54,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontFamily: "System",
-    // alignSelf: "center",
-    // marginTop: 20,
-    // fontWeight: "bold",
     marginHorizontal: 20,
-    // color: "#007AFF",
   },
   newHere: {
     textAlign: "center",
