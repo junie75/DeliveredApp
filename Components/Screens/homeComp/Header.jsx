@@ -1,3 +1,4 @@
+//component for the header which contains the logo and menu buttons
 import React from "react";
 import {
   TouchableOpacity,
@@ -5,23 +6,31 @@ import {
   Image,
   StyleSheet,
   Platform,
+  Text,
 } from "react-native";
-const Header = ({ showMenu }) => {
+const Header = ({ navigation, showMenu }) => {
   return (
     <View style={styles.header}>
       {/*Header*/}
-      <TouchableOpacity style={styles.menuButton}>
-        {/*menu button*/}
-        {showMenu && (
+      {showMenu ? (
+        <TouchableOpacity
+          style={styles.menuButton}
+          onPress={() => navigation.toggleDrawer()}
+        >
+          {/*menu button*/}
+
           <Image
             source={{
               uri: /* "https://icons8.com/icon/3096/menu",*/ "https://img.icons8.com/ios/50/menu--v1.png",
             }}
             style={styles.menu}
           />
-        )}
-        {/*icon*/}
-      </TouchableOpacity>
+
+          {/*icon*/}
+        </TouchableOpacity>
+      ) : (
+        <View></View>
+      )}
 
       {/*DELIVERED logo*/}
       <TouchableOpacity>
@@ -30,6 +39,8 @@ const Header = ({ showMenu }) => {
           style={styles.logoImageText}
         />
       </TouchableOpacity>
+
+      {/* Extra view used for layout*/}
       <View></View>
     </View>
   );
@@ -37,11 +48,9 @@ const Header = ({ showMenu }) => {
 
 const styles = StyleSheet.create({
   header: {
-    // borderColor: "black",
-    // borderWidth: 1,
+    //edit margins based on ios or android platform
     margin: Platform.OS === "ios" ? 20 : 10,
     marginTop: Platform.OS === "ios" ? 0 : 70,
-    // height: 100,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -51,14 +60,17 @@ const styles = StyleSheet.create({
     height: 50,
   },
   menu: {
-    // alignItems: "flex-start",
-    // left: -40,
     width: 20,
     height: 20,
   },
-  // menuButton: {
-  //   display: none ,
-  // },
+  logOutBtn: {
+    padding: 3,
+    borderRadius: 8,
+  },
+  logOutBtnTxt: {
+    color: "#007AFF",
+    textDecorationLine: "underline",
+  },
 });
 
 export default Header;

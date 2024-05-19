@@ -1,98 +1,196 @@
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  Pressable,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
+import { useState, useEffect, useContext } from "react";
 import React from "react";
-import Header from "./Components/Screens/homeComp/Header";
-import Hero from "./Components/Screens/homeComp/Hero";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-export default function App() {
+import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import * as SQLite from "expo-sqlite";
+// import * as Sharing from "expo-sharing";
+// import * as FileSystem from "expo-file-system";
+// import * as DocumentPicker from "expo-document-picker";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Home from "./Components/Screens/HomeScreen";
+import DeliveriesScreen from "./Components/Screens/DeliveriesScreen";
+import MailMapScreen from "./Components/Screens/MailMapScreen";
+import HowToScreen from "./Components/Screens/HowToScreen";
+import {
+  Screen,
+  ScreenStackHeaderConfig,
+} from "react-native-screens/native-stack";
+import Login from "./Components/Screens/LogInScreen";
+import SignUp from "./Components/Screens/SignUpScreen";
+import OnboardingScreen from "./Components/Screens/OnboardingScreen";
+import AdminHome from "./Components/adminScreens/AdminHome";
+import ProfileScreen from "./Components/Screens/ProfileScreen";
+import { openDatabase, createTables } from "./databaseHelper";
+import UserContext, { UserProvider } from "./context/UserContext";
+import StorageManagement from "./Components/adminScreens/StorageManagement";
+import ResolveIssues from "./Components/adminScreens/ResolveIssues";
+import ScanMail from "./Components/adminScreens/ScanMail";
+import CheckMailRequest from "./Components/Screens/CheckMailRequest";
+import NewRequestForm from "./Components/Screens/NewRequestForm";
+import PastRequests from "./Components/Screens/PastRequests";
+import RequestDetails from "./Components/adminScreens/RequestDetails";
+
+// import SQLite from "react-native-sqlite-storage";
+// import { FileSystem } from "expo-file-system";
+
+const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+// function ProfileScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+//       <Text>Profile Screen</Text>
+//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     </View>
+//   );
+// }
+
+function DrawerContent({ navigation }) {
+  const { updateUser } = useContext(UserContext);
   return (
-    <SafeAreaView>
-      <View>
-        <Header showMenu={false} />
+    <View
+      style={{
+        flex: 1,
+        paddingTop: 50,
+        alignItems: "flex-start",
+      }}
+    >
+      <Button title="Home" onPress={() => navigation.navigate("Home")} />
+      <Button title="Profile" onPress={() => navigation.navigate("Profile")} />
+      <Button
+        title="Check Mail Request"
+        onPress={() => navigation.navigate("Check Mail Request Form")}
+      />
+      <Button
+        style={{ color: "#BBB0C1" }}
+        title="Logout"
+        onPress={() => {
+          // Implement your logout logic here
+          // For example, clearing user session or token
+          updateUser(null);
+          navigation.navigate("Login");
+        }}
+      />
+    </View>
+  );
+}
 
-        <KeyboardAwareScrollView behavior="position">
-          <Hero imageURL={"../../../assets/signInHero.png"} />
-          {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-          <View style={styles.loginBox}>
-            <View style={styles.inputBoxes}>
-              <Text style={styles.inputLabel}>Email</Text>
-              <TextInput style={styles.inputBox} />
-            </View>
+function DrawerScreens() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} />}
+      // screenOptions={{ headerShown: false }}
+    >
+      <Drawer.Screen
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: true }}
+      />
+      <Drawer.Screen
+        name="Check Mail Request Form"
+        component={CheckMailRequest}
+        options={{ headerShown: true, title: "Check Mail Request" }}
+      />
+      {/* <Drawer.Screen name="Deliveries" component={DeliveriesScreen} />
+      <Drawer.Screen name="Mailroom Map" component={MailMapScreen} />
+      <Drawer.Screen name="How-To Page" component={HowToScreen} />
+      <Drawer.Screen name="Admin Home" component={AdminHome} /> */}
+    </Drawer.Navigator>
+  );
+}
 
-            <View style={styles.inputBoxes}>
-              <Text style={styles.inputLabel}>Password</Text>
-              <TextInput style={styles.inputBox} />
-            </View>
-            <TouchableOpacity style={styles.loginBtn}>
-              <Text style={styles.loginTxt}>Login</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity>
-            <Text style={styles.newHere}>New here? Create Account</Text>
-          </TouchableOpacity>
-          {/* </TouchableWithoutFeedback> */}
-        </KeyboardAwareScrollView>
-      </View>
-    </SafeAreaView>
+export default function App() {
+  useEffect(() => {
+    //open db when the app starts
+    const database = openDatabase();
+    console.log("database opened succdessfully");
+    //create tables if they don't exist
+    createTables();
+    console.log("tables created succdessfully");
+    // return async () => {
+    //   //optionally close the db when the app is unmounted
+    //   await database.closeAsync();
+    //   console.log("database closed successfully");
+    // };
+  }, []);
+  return (
+    <NavigationContainer>
+      <UserProvider>
+        <Stack.Navigator>
+          {/* <Stack.Screen
+          name="Onboard"
+          component={OnboardingScreen}
+          options={{ headerShown: false }}
+        /> */}
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            // options={{ title: "Create an Account" }}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="DrawerScreens"
+            component={DrawerScreens}
+            options={{ headerShown: false, title: "Home" }}
+          />
+
+          {/* <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
+          /> */}
+          <Stack.Screen name="Deliveries" component={DeliveriesScreen} />
+          <Stack.Screen name="Mailroom Map" component={MailMapScreen} />
+          <Stack.Screen name="How-To Page" component={HowToScreen} />
+          <Stack.Screen name="New Request" component={NewRequestForm} />
+          <Stack.Screen name="Past Requests" component={PastRequests} />
+
+          <Stack.Screen
+            name="Admin Home"
+            component={AdminHome}
+            options={{ headerShown: false, title: "Home" }}
+          />
+          <Stack.Screen
+            name="Storage Screen"
+            component={StorageManagement}
+            options={{ title: "Storage Management" }}
+          />
+          <Stack.Screen
+            name="Resolve Issues"
+            component={ResolveIssues}
+            options={{ title: "Check Mail Requests", headerBackTitle: "Back" }}
+          />
+          <Stack.Screen
+            name="Scan Mail"
+            component={ScanMail}
+            options={{ title: "Mail Management" }}
+          />
+          <Stack.Screen
+            name="Request Details"
+            component={RequestDetails}
+            options={{ headerBackTitle: "Back" }}
+          />
+        </Stack.Navigator>
+      </UserProvider>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  loginBox: {
-    // marginTop: "50%",
-    justifyContent: "center",
-    marginHorizontal: 20,
-  },
-  inputBoxes: {
-    paddingVertical: 10,
-  },
-  inputLabel: {
-    fontSize: 15,
-    paddingBottom: 5,
-    marginLeft: 10,
-    // color: "lightgray",
-  },
-  inputBox: {
-    // borderColor: "lightgray",
-    borderRadius: 10,
-    borderWidth: 1,
-    // backgroundColor: "#fff",
-    height: 60,
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-    // // shadowRadius: 4, // Shadow radius (adjust as needed)
-    // elevation: 5, //android specific, no effect on ios
-  },
-  loginBtn: {
-    marginVertical: 8,
-    backgroundColor: "#007AFF",
-    alignSelf: "center",
-    // textAlign: "center",
-    width: "100%",
-    borderRadius: 30,
-  },
-
-  loginTxt: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 20,
-    paddingVertical: 10,
-  },
-
-  newHere: {
-    textAlign: "center",
-    color: "#007AFF",
+  container: {
+    backgroundColor: "#fff",
   },
 });

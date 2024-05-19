@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+//component that displays the client interface home page upon login
+import React, { useEffect, useState, useContext } from "react";
 import {
   SafeAreaView,
   TouchableOpacity,
@@ -11,43 +12,67 @@ import {
   Platform,
   Alert,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import Header from "./homeComp/Header";
 import Hero from "./homeComp/Hero";
 import NavBtnBox from "./homeComp/NavBtnBox";
-// import DeliveredDB from "../../DeliveredDB";
-//navigation prop used to navigate between pages
-import { getAccounts, insertAccount } from "../../DeliveredDB";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+
+import { getAccounts, insertAccount } from "../../databaseHelper";
+import UserContext from "../../context/UserContext";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+//receives the navigation prop from the stack navigator
 const Home = ({ navigation }) => {
   const [newDelivery, setNewDelivery] = useState(true);
   const [accounts, setAccounts] = useState([]);
+  const { user } = useContext(UserContext);
+
+  //used to display loading screen while waiting for images to load
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [totalImages, setTotalImages] = useState(1); // Update this with the total number of images
 
   //useEffect checks state of newDelivery and displays the alert
   useEffect(() => {
-    if (newDelivery) {
-      createAlert();
-      setNewDelivery(false);
-    }
-
+    checkForAlert();
+    //USED FOR VIEWING ACCOUNTS IN DATABASE DEBUGGING
     getAccounts(setAccounts);
   }, []);
+
+  //failed attempt at loading screen
+  const handleImageLoad = () => {
+    // setLoading(false); // Set loading to false when the image is loaded
+    setLoadedCount((prevCount) => prevCount + 1);
+  };
+
+  //will result in "true"  when all the images are loaded
+  const allImagesLoaded = loadedCount === totalImages;
 
   //same blue color as the check
   const logoColor = "#007AFF";
 
-  //UNNEEDED, used to test alert
-  // const displayAlert = () => {
-  //   if (newDelivery) {
-  //     createAlert();
-  //     setNewDelivery(false);
+  //DEBUGGING   //inserts a new account into the database
+  // const insertData = async (fname = "juni", lname = "ejere") => {
+  //   try {
+  //     await insertAccount(fname, lname);
+  //   } catch (e) {
+  //     Alert.alert(`Error inserting ${fname}`, e.message);
   //   }
   // };
 
-  const insertData = async (fname = "juni", lname = "ejere") => {
-    try {
-      await insertAccount(fname, lname);
-    } catch (e) {
-      Alert.alert(`Error inserting ${fname}`, e.message);
+  //check if user's ACCID is set in secure storage with a 1 value signifying a new delivery
+  const checkForAlert = async () => {
+    //check value of newDelivery in secure storage
+    const isAlert = await AsyncStorage.getItem(`${user.AccID}`);
+
+    //if newDelivery is true, create the alert
+    if (isAlert && isAlert == "true") {
+      createAlert();
+
+      //resets the newDelivery alert to false so alert only appears once
+      await AsyncStorage.setItem(`${user.AccID}`, "false");
     }
   };
 
@@ -70,7 +95,7 @@ const Home = ({ navigation }) => {
           onPress: () => {
             console.log("deliveries pressed");
             // console.log(myDB);
-            console.log(accounts);
+            // console.log(accounts);
             navigation.navigate("Deliveries");
           },
           isPreferred: "true",
@@ -79,6 +104,7 @@ const Home = ({ navigation }) => {
     );
   };
 
+  //DEBUGGING  //displays the accounts in the database
   const showAccounts = () => {
     //map the names to a row
     return accounts.map((accounts, index) => {
@@ -91,6 +117,7 @@ const Home = ({ navigation }) => {
           <Text>Last Name: {accounts.Lname}</Text>
           <Text>Address: {accounts.Address}</Text>
           <Text>Email: {accounts.Email}</Text>
+          <Text>Password: {accounts.Password}</Text>
           <Text>Phone: {accounts.Phone}</Text>
           <Text>isAdmin: {accounts.isAdmin}</Text>
           <Text />
@@ -104,30 +131,24 @@ const Home = ({ navigation }) => {
     });
   };
 
+  //image name for the hero image
+  const imageName = "onBoardHero";
   return (
-    // <ImageBackground
-    //   source={require("../assets/AppBackground.png")}
-    //   style={{
-    //     height: "100%",
-    //     width: "auto",
-    //     margin: 0,
-    //     justifyContent: "flex-start",
-    //     flex: 1,
-    //     resizeMode: "stretch",
-    //     backgroundColor: "blue",
-    //   }}
-    // >
     <SafeAreaView style={styles.container}>
+      {/* {allImagesLoaded ? ( */}
       <ScrollView>
-        <Header showMenu={true} />
-        <Hero imageURL={"../../../assets/packageDelivery.png"} />
+        <Header showMenu={true} navigation={navigation} />
+        {/* <Text style={styles.welcomeTxt}>Welcome, {user.Fname}</Text> */}
+        <Hero imageName={imageName} /*onImageLoad={handleImageLoad}*/ />
         <NavBtnBox navigation={navigation} />
-        <Button title="test" onPress={() => insertData()} />
-        <Button title="try" onPress={() => console.log(accounts)} />
-        {showAccounts()}
+        {/* <Button title="test" onPress={() => insertData()} />
+        <Button title="try" onPress={() => console.log(accounts)} />*/}
+        {/* {showAccounts()} */}
       </ScrollView>
+      {/* ) : ( */}
+      {/* <ActivityIndicator size="large" color="#007AFF" /> */}
+      {/* )} */}
     </SafeAreaView>
-    // </ImageBackground>
   );
 };
 
@@ -141,132 +162,10 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
   },
-  // header: {
-  //   // borderColor: "black",
-  //   // borderWidth: 1,
-  //   margin: Platform.OS === "ios" ? 20 : 10,
-  //   marginTop: Platform.OS === "ios" ? 0 : 70,
-  //   // height: 100,
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "space-between",
-  // },
-  // logoText: {
-  //   fontSize: 20,
-  //   fontFamily: "System",
-  //   // marginHorizontal: 10,
-  //   fontWeight: "bold",
-  //   marginRight: 10,
-  // },
-  // logoImage: {
-  //   width: 60,
-  //   height: 60,
-  //   // alignItems: "center",
-  // },
-  // logoImageText: {
-  //   width: 150,
-  //   height: 50,
-  // },
-  // menu: {
-  //   // alignItems: "flex-start",
-  //   // left: -40,
-  //   width: 20,
-  //   height: 20,
-  // },
-
-  // //container holding welcome sign
-  // welcomeBox: {
-  //   height: 300,
-  //   // borderColor: "black",
-  //   // borderWidth: 10,
-  //   borderRadius: 10,
-  //   // flexWrap: "wrap",
-  //   // textAlign: "center",
-  //   marginHorizontal: 12,
-  //   // backgroundColor: "rgba(52, 152, 219, 0.2)",
-  //   justifyContent: "center",
-  //   alignItems: "flex-start",
-  // },
-
-  // //welcome to delivered text
-  // welcomeText: {
-  //   display: "none",
-  //   fontSize: 50,
-  //   fontWeight: "bold",
-  //   lineHeight: 80,
-  //   // fontFamily: "System",
-  //   // color: "lightblue",
-  //   // color: logoColor,
-  // },
-
-  // // welcomeDelivered: {
-  // //   fontSize: 50,
-  // //   fontWeight: "bold",
-  // //   lineHeight: 80,
-  // //   // fontFamily: "System",
-  // // },
-
-  // //delivered-check
-  // welcomeImage: {
-  //   display: "none",
-  //   height: 65,
-  //   width: 65,
-  //   position: "absolute",
-  //   //change location based on device, default is hidden
-  //   ...Platform.select({
-  //     ios: {
-  //       top: 189,
-  //       left: 260,
-  //     },
-  //     android: {
-  //       top: 170,
-  //       left: 190,
-  //     },
-  //     default: {
-  //       display: "none",
-  //     },
-  //   }),
-  // },
-
-  // //background image behind text
-  // welcomeBackground: {
-  //   marginHorizontal: 10,
-  // },
-
-  // navButtons: {
-  //   // borderColor: "black",
-  //   // borderWidth: 1,
-  //   borderRadius: 10,
-  //   backgroundColor: "#fff",
-  //   // borderRadius: 8, // Border radius for rounded corners (adjust as needed)
-  //   shadowColor: "#000",
-  //   shadowOffset: { width: 0, height: 2 },
-  //   shadowOpacity: 0.3, // Shadow opacity (adjust as needed)
-  //   // shadowRadius: 4, // Shadow radius (adjust as needed)
-  //   elevation: 5, //android specific, no effect on ios
-  //   paddingVertical: 10,
-  //   paddingHorizontal: 10,
-  //   marginHorizontal: 20,
-  //   marginVertical: 5,
-  //   flex: 1,
-  //   alignItems: "center",
-  //   justifyContent: "flexStart",
-  //   flexDirection: "row",
-  // },
-
-  // navButtonText: {
-  //   // fontFamily: "System",
-  //   marginLeft: 10,
-  // },
-
-  // navButtonBox: {
-  //   // borderColor: "black",
-  //   // borderWidth: 1,
-  //   height: 300,
-  // },
-
-  // navIcon: {
-  //   width: 64,
-  //   height: 64,
-  // },
+  welcomeTxt: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginLeft: 15,
+    color: "#BBB0C1",
+  },
 });

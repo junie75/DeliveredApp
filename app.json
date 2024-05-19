@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "delivered-app2",
-    "slug": "delivered-app2",
+    "name": "Delivered",
+    "slug": "Delivered",
+    "description": "An app that improves the efficiency of university mailrooms",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/DeliveredIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/DeliveredSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

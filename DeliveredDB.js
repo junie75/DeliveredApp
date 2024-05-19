@@ -247,46 +247,46 @@ const updateName = (id) => {
   });
 };
 
-const showNames = () => {
-  //map the names to a row
-  return names.map((name, index) => {
-    //builds list of components based off of array
-    return (
-      //for each name, create this component
-      <View key={index} style={styles.row}>
-        <Text>{name.name}</Text>
-        <Button title="Delete" onPress={() => deleteName(name.id)} />
-        <Button
-          title="Update"
-          onPress={() => updateName(name.id) /*console.log(name.id)*/}
-        />
-      </View>
-    );
-  });
-};
+// const showNames = () => {
+//   //map the names to a row
+//   return names.map((name, index) => {
+//     //builds list of components based off of array
+//     return (
+//       //for each name, create this component
+//       <View key={index} style={styles.row}>
+//         <Text>{name.name}</Text>
+//         <Button title="Delete" onPress={() => deleteName(name.id)} />
+//         <Button
+//           title="Update"
+//           onPress={() => updateName(name.id) /*console.log(name.id)*/}
+//         />
+//       </View>
+//     );
+//   });
+// };
 
-const showAccounts = () => {
-  //map the names to a row
-  return accounts.map((accounts, index) => {
-    //builds list of components based off of array
-    return (
-      //for each name, create this component
-      <View key={index} style={styles.row}>
-        <Text>{accounts.Fname}</Text>
-        <Text>{accounts.Lname}</Text>
-        <Text>{accounts.Address}</Text>
-        <Text>{accounts.Email}</Text>
-        <Text>{accounts.Phone}</Text>
-        <Text>{accounts.isAdmin}</Text>
+// const showAccounts = () => {
+//   //map the names to a row
+//   return accounts.map((accounts, index) => {
+//     //builds list of components based off of array
+//     return (
+//       //for each name, create this component
+//       <View key={index} style={styles.row}>
+//         <Text>{accounts.Fname}</Text>
+//         <Text>{accounts.Lname}</Text>
+//         <Text>{accounts.Address}</Text>
+//         <Text>{accounts.Email}</Text>
+//         <Text>{accounts.Phone}</Text>
+//         <Text>{accounts.isAdmin}</Text>
 
-        {/* <Button
-            title="Update"
-            onPress={() => updateName(name.id) /*console.log(name.id)/}
-          /> */}
-      </View>
-    );
-  });
-};
+//         {/* <Button
+//             title="Update"
+//             onPress={() => updateName(name.id) /*console.log(name.id)/}
+//           /> */}
+//       </View>
+//     );
+//   });
+// };
 
 // const getAccounts = () => {
 //   return accounts;
@@ -311,20 +311,20 @@ const showAccounts = () => {
 
 export { getAccounts, insertAccount };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  row: {
-    flexDirection: "column",
-    alignItems: "center",
-    // alignSelf: "stretch",
-    // justifyContent: "space-between",
-    // margin: 8,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#fff",
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   row: {
+//     flexDirection: "column",
+//     alignItems: "center",
+//     // alignSelf: "stretch",
+//     // justifyContent: "space-between",
+//     // margin: 8,
+//   },
+// });
 
 // export default DeliveredDB;

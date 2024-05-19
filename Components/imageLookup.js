@@ -1,0 +1,23 @@
+//this function can be called to get the image path of the image you want to use
+export const imageLookup = {
+  signInHero: require("../assets/signInHero.png"),
+  homeHero: require("../assets/homeHero.png"),
+  onBoardHero: require("../assets/onboardImg.png"),
+  schoolMap: require("../assets/schoolMap.png"),
+  howToImage: require("../assets/howToImage.png"),
+  createAccImage: require("../assets/createAccHero.png"),
+  profileHero: require("../assets/profileHero2.png"),
+  pckgIcon: require("../assets/package-svgrepo-com.png"),
+  globeIcon: require("../assets/globe-svgrepo-com.png"),
+  aboutIcon: require("../assets/about-svgrepo-com.png"),
+  storageIcon: require("../assets/storage-management-blue.png"),
+  mailIcon: require("../assets/mail-management-blue.png"),
+  dbIcon: require("../assets/database-management-blue.png"),
+  issuesIcon: require("../assets/resolve-issues-blue.png"),
+  alertRed: require("../assets/alert-red.png"),
+  alertOrange: require("../assets/alert-orange.png"),
+  alertGreen: require("../assets/alert-green.png"),
+  checkMail: require("../assets/checkMailRequest.png"),
+  newRequest: require("../assets/newRequest.png"),
+  pastRequests: require("../assets/pastRequests.png"),
+};
