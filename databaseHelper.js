@@ -1,5 +1,5 @@
 // Description: This file contains the functions that interact with the SQLite database.
-import * as SQLite from "expo-sqlite";
+import * as SQLite from "expo-sqlite/legacy";
 
 // Open the database
 const db = SQLite.openDatabase("database.db");
@@ -10,27 +10,105 @@ export const openDatabase = () => {
   return db;
 };
 
-//create the tables in the array if not created already
+// //create the tables in the array if not created already
+// export const createTables = () => {
+//   db.transaction((tx) => {
+//     //create accounts table
+//     tx.executeSql(
+//       "CREATE TABLE IF NOT EXISTS Accounts" +
+//         "(AccID INTEGER PRIMARY KEY AUTOINCREMENT, Fname TEXT, Lname TEXT, Password TEXT, Address TEXT, Email TEXT, Phone TEXT, isAdmin INTEGER)",
+//       [],
+//       (result) => {
+//         console.log("Accounts Table created successfully");
+//       },
+//       (error) => {
+//         console.log("Create Accounts table error", error);
+//       }
+//     );
+
+//     //create deliveries table
+//     tx.executeSql(
+//       // isPickedUp is a boolean value that can either be 0 or 1
+//       "CREATE TABLE IF NOT EXISTS Deliveries" +
+//         "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, DatePickedUp DateTime, TrackingNum String, isPickedUp INTEGER)",
+//       [],
+//       (result) => {
+//         console.log("Deliveries Table created successfully");
+//       },
+//       (error) => {
+//         console.log("Create Deliveries table error", error);
+//       }
+//     );
+
+//     //create check mail requests table
+//     tx.executeSql(
+//       //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
+//       "CREATE TABLE IF NOT EXISTS CheckMailRequests" +
+//         "(RequestID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, DateOfRequest DateTime, ExpectedDate DateTime, MailType TEXT, Status TEXT, Decision TEXT, ExtraInfo TEXT, Priority TEXT)",
+//       [],
+//       (result) => {
+//         console.log("CheckMailRequests Table created successfully");
+//       },
+//       (error) => {
+//         console.log("Create CheckMailRequests table error", error);
+//       }
+//     );
+//   });
+// };
+
 export const createTables = () => {
   db.transaction((tx) => {
-    //create accounts table
+    // Create accounts table
     tx.executeSql(
       "CREATE TABLE IF NOT EXISTS Accounts" +
         "(AccID INTEGER PRIMARY KEY AUTOINCREMENT, Fname TEXT, Lname TEXT, Password TEXT, Address TEXT, Email TEXT, Phone TEXT, isAdmin INTEGER)",
       [],
       (result) => {
         console.log("Accounts Table created successfully");
+
+        // Check if admin account already exists
+        tx.executeSql(
+          "SELECT * FROM Accounts WHERE isAdmin = ?",
+          [1],
+          (tx, results) => {
+            if (results.rows.length === 0) {
+              // Insert admin account
+              tx.executeSql(
+                "INSERT INTO Accounts (Fname, Lname, Password, Address, Email, Phone, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [
+                  "Admin",
+                  "Admin",
+                  "admin123",
+                  "Admin Address",
+                  "admin@testmail.com",
+                  "1234567890",
+                  1,
+                ], // isAdmin = 1 for admin account
+                (result) => {
+                  console.log("Admin account created successfully");
+                },
+                (error) => {
+                  console.log("Insert admin account error", error);
+                }
+              );
+            } else {
+              console.log("Admin account already exists");
+            }
+          },
+          (error) => {
+            console.log("Error checking for existing admin account", error);
+          }
+        );
       },
       (error) => {
         console.log("Create Accounts table error", error);
       }
     );
 
-    //create deliveries table
+    // Create deliveries table
     tx.executeSql(
-      // isPickedUp is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS Deliveries" +
-        "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, MailType TEXT, DateReceived DateTime, DatePickedUp DateTime, TrackingNum String, isPickedUp INTEGER)",
+        "(DeliveryID INTEGER PRIMARY KEY AUTOINCREMENT, AccID INTEGER, MailType TEXT, DateReceived DATETIME, DatePickedUp DATETIME, TrackingNum TEXT, isPickedUp INTEGER)",
       [],
       (result) => {
         console.log("Deliveries Table created successfully");
@@ -40,11 +118,10 @@ export const createTables = () => {
       }
     );
 
-    //create check mail requests table
+    // Create check mail requests table
     tx.executeSql(
-      //create simple table with name and text as attributes, isAdmin is a boolean value that can either be 0 or 1
       "CREATE TABLE IF NOT EXISTS CheckMailRequests" +
-        "(RequestID INTEGER PRIMARY KEY AUTOINCREMENT, AccID Integer, DateOfRequest DateTime, ExpectedDate DateTime, MailType TEXT, Status TEXT, Decision TEXT, ExtraInfo TEXT, Priority TEXT)",
+        "(RequestID INTEGER PRIMARY KEY AUTOINCREMENT, AccID INTEGER, DateOfRequest DATETIME, ExpectedDate DATETIME, MailType TEXT, Status TEXT, Decision TEXT, ExtraInfo TEXT, Priority TEXT)",
       [],
       (result) => {
         console.log("CheckMailRequests Table created successfully");

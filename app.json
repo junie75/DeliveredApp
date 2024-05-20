@@ -5,10 +5,10 @@
     "description": "An app that improves the efficiency of university mailrooms",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/DeliveredIcon.png",
+    "icon": "./assets/DeliveredIconv2.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/DeliveredSplash.png",
+      "image": "./assets/DeliveredSplashv2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -32,8 +32,16 @@
       }
     },
     "plugins": [
-      ["@morrowdigital/watermelondb-expo-plugin", { "disableJSI": true }],
-      ["expo-build-properties"]
+      [
+        "@morrowdigital/watermelondb-expo-plugin",
+        {
+          "disableJSI": true
+        }
+      ],
+      ["expo-build-properties"],
+      "expo-asset",
+      "expo-font",
+      "expo-secure-store"
     ]
   }
 }

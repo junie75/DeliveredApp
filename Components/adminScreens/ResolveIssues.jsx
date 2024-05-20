@@ -22,12 +22,8 @@ const ResolveIssues = ({ navigation }) => {
   let orangeIcon = "alertOrange";
   let greenIcon = "alertGreen";
 
-  const [imageName, setImageName] = useState("");
-  const [checked, setChecked] = useState(true);
-  const toggleCheckbox = () => setChecked(!checked);
-
   const [helpTickets, setHelpTickets] = useState([]);
-  const [updatedHelpTickets, setUpdatedHelpTickets] = useState([]);
+  const [helpTicketsFound, setHelpTicketsFound] = useState(false);
   const currentDate = new Date();
 
   useFocusEffect(
@@ -43,6 +39,12 @@ const ResolveIssues = ({ navigation }) => {
       });
     }, [])
   );
+
+  useEffect(() => {
+    if (helpTickets.length > 0) {
+      setHelpTicketsFound(true);
+    }
+  }, [helpTickets]);
 
   //high priority: Urgent & require immediate attention // time > 72 hrs
   //medium priority: Moderately urgent // 72hrs > time > 48 hrs
@@ -103,55 +105,69 @@ const ResolveIssues = ({ navigation }) => {
           <Text style={[styles.txt, styles.label]}>Status</Text>
         </View>
         {/*Display each help ticket */}
-        <View style={styles.rows}>
-          {helpTickets.map((ticket, index) => {
-            //format Expecteded date
-            const formattedExpectedDate = new Date(
-              ticket.ExpectedDate + "Z"
-            ).toLocaleDateString();
 
-            //format date of request
-            const formattedDateOfRequest = new Date(
-              ticket.DateOfRequest + "Z"
-            ).toLocaleDateString();
+        {helpTicketsFound ? (
+          <View style={styles.rows}>
+            {helpTickets.map((ticket, index) => {
+              //format Expecteded date
+              const formattedExpectedDate = new Date(
+                ticket.ExpectedDate + "Z"
+              ).toLocaleDateString();
 
-            // calculatePriority(ticket);
-            console.log(ticket);
+              //format date of request
+              const formattedDateOfRequest = new Date(
+                ticket.DateOfRequest + "Z"
+              ).toLocaleDateString();
 
-            return (
-              <TouchableOpacity
-                style={styles.requestBox}
-                key={index}
-                onPress={() => {
-                  navigation.navigate("Request Details", { ticket });
-                }}
-              >
-                <View style={styles.content}>
-                  <View style={styles.contentItem}>
-                    <Text style={[styles.txt, { fontSize: 9 }]}>
-                      {ticket.Fname} {ticket.Lname}
-                    </Text>
+              // calculatePriority(ticket);
+              console.log(ticket);
+
+              return (
+                <TouchableOpacity
+                  style={styles.requestBox}
+                  key={index}
+                  onPress={() => {
+                    navigation.navigate("Request Details", { ticket });
+                  }}
+                >
+                  <View style={styles.content}>
+                    <View style={styles.contentItem}>
+                      <Text style={[styles.txt, { fontSize: 9 }]}>
+                        {ticket.Fname} {ticket.Lname}
+                      </Text>
+                    </View>
+                    <View style={styles.contentItem}>
+                      <Text style={styles.txt}>{ticket.MailType}</Text>
+                    </View>
+                    <View style={styles.contentItem}>
+                      <Text style={styles.txt}>{formattedDateOfRequest}</Text>
+                    </View>
+                    <View style={styles.contentItem}>
+                      <Image
+                        source={imageLookup[ticket.imageName]}
+                        style={styles.alertIcon}
+                      />
+                    </View>
+                    <View style={styles.contentItem}>
+                      <Text style={styles.txt}>{ticket.Status}</Text>
+                    </View>
                   </View>
-                  <View style={styles.contentItem}>
-                    <Text style={styles.txt}>{ticket.MailType}</Text>
-                  </View>
-                  <View style={styles.contentItem}>
-                    <Text style={styles.txt}>{formattedDateOfRequest}</Text>
-                  </View>
-                  <View style={styles.contentItem}>
-                    <Image
-                      source={imageLookup[ticket.imageName]}
-                      style={styles.alertIcon}
-                    />
-                  </View>
-                  <View style={styles.contentItem}>
-                    <Text style={styles.txt}>{ticket.Status}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ) : (
+          <Text
+            style={{
+              color: "gray",
+              marginHorizontal: 10,
+              textAlign: "center",
+              marginTop: "50%",
+            }}
+          >
+            No issues found
+          </Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

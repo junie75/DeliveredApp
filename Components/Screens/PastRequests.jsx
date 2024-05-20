@@ -14,16 +14,23 @@ const PastRequests = () => {
   //get the user from the context
   const { user } = useContext(UserContext);
   const [userRequests, setUserRequests] = useState([]);
+  const [userHasRequests, setUserHasRequests] = useState(false);
 
   useEffect(() => {
     //get all the check requests belonging to the user upon load
     getUserCheckRequestsByID(user.AccID, setUserRequests);
   }, []);
 
+  useEffect(() => {
+    if (userRequests.length > 0) {
+      setUserHasRequests(true);
+    }
+  }, [userRequests]);
+
   return (
     <View style={styles.container}>
       <ScrollView>
-        {
+        {userHasRequests ? (
           //map through all the user's requests and display them from newest to oldest
           userRequests.reverse().map((request, index) => {
             //convert dates to proper format
@@ -71,7 +78,13 @@ const PastRequests = () => {
               </View>
             );
           })
-        }
+        ) : (
+          <Text
+            style={{ textAlign: "center", marginTop: "50%", color: "gray" }}
+          >
+            You have no past requests.
+          </Text>
+        )}
       </ScrollView>
     </View>
   );
