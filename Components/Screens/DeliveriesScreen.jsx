@@ -25,6 +25,12 @@ const DeliveriesScreen = ({ navigation }) => {
     getUserDeliveriesByID(user.AccID, setUserDeliveries);
   }, []);
 
+  useEffect(() => {
+    if (userDeliveries.length > 0) {
+      setUserHasDel(true);
+    }
+  }, [userDeliveries]);
+
   //converts the date received string to a date object and formats it to a string
   const convertDateReceived = (dateReceived) => {
     // Convert DateTime string to JavaScript Date object, appends Z to indicate UTC timezone
@@ -89,12 +95,12 @@ const DeliveriesScreen = ({ navigation }) => {
         <View style={styles.container}>
           <View style={styles.boxContainer}>
             {/* delivery box */}
-            {/* {userHasDel ? (
+            {userHasDel ? (
               showDeliveries()
             ) : (
-              <Text>No deliveries to show.</Text>
-            )} */}
-            {showDeliveries()}
+              <Text style={styles.noDel}>No deliveries to show.</Text>
+            )}
+            {/* {showDeliveries()} */}
           </View>
 
           <View style={styles.footer}>
@@ -166,6 +172,13 @@ const styles = StyleSheet.create({
   },
 
   details: {
+    color: "gray",
+  },
+
+  noDel: {
+    textAlign: "center",
+    fontSize: 15,
+    marginTop: "50%",
     color: "gray",
   },
 });

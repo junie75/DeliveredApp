@@ -12,7 +12,7 @@ import {
   Alert,
 } from "react-native";
 // import { BarCodeScanner } from "expo-barcode-scanner";
-import { AutoFocus, Camera } from "expo-camera";
+import { AutoFocus, Camera } from "expo-camera/legacy";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -253,12 +253,19 @@ function ChooseDelivery({ navigation }) {
 function PackagePickup({ navigation, route }) {
   const { data } = route.params || {}; //receives tracking number from scanPackage
   const [packageInfo, setPackageInfo] = useState([]);
+  const [packageFound, setPackageFound] = useState(false); //if package is found, set to true
   const trackingNum = data;
 
   //call getResults upon loading of the page
   useEffect(() => {
     getResults();
   }, []);
+
+  useEffect(() => {
+    if (packageInfo.length > 0) {
+      setPackageFound(true);
+    }
+  }, [packageInfo]);
 
   //change package to picked up in the database
   const updatePackageToPickedUp = async (deliveryID) => {
@@ -324,7 +331,22 @@ function PackagePickup({ navigation, route }) {
           Tracking Number: {data}
         </Text>
       </View>
-      <ScrollView style={styles.containerCard}>{showResults()}</ScrollView>
+      <ScrollView style={styles.containerCard}>
+        {packageFound ? (
+          showResults()
+        ) : (
+          <Text
+            style={{
+              fontSize: 10,
+              color: "gray",
+              textAlign: "center",
+              marginTop: "50%",
+            }}
+          >
+            No packages found with this tracking number.
+          </Text>
+        )}
+      </ScrollView>
     </View>
   );
 }
