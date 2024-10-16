@@ -72,7 +72,8 @@ You can quickly demo the Delivered app via Expo Snack: [Quick Project Demo](http
  
 5. Download the **Expo Go** app from the [App Store (iOS)](https://apps.apple.com/us/app/expo-go/id982107779) or [Google Play (Android)](https://play.google.com/store/apps/details?id=host.exp.exponent).
 6. Open the Expo Go app and scan the QR code provided when the project is running.
-*** You also have the option to choose to run the app on android or ios using device emulators on Xcode or Android Studio. ***
+
+***You also have the option to choose to run the app on android or ios using device emulators on Xcode or Android Studio.***
 
 ## Usage
 
