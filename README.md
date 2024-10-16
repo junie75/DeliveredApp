@@ -1,7 +1,6 @@
 # Delivered - University Mailroom Mobile Application
 
 **Author**: Juni Ejere  
-**Email**: jejere@mail.stmarytx.edu  
 **Project**: Senior Project - Spring 2024
 
 ## Overview
