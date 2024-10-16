@@ -115,7 +115,4 @@ You can quickly demo the Delivered app via Expo Snack: [Quick Project Demo](http
 2. Use the scanning tool to log new mail, notify recipients, and manage storage.
 3. Resolve help tickets and track package storage limits.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
